@@ -1,0 +1,8 @@
+/*  src/index.vue  start */
+.el-tree-tabel-column-type-icon{
+    padding-right: 7px;
+}
+.el-tree-tabel-column-type-icon.is-file{
+    padding-left: 18px;
+}
+/*  src/index.vue  end */
