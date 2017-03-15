@@ -1,1 +1,155 @@
-!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):e.ELEMENT_TREE_COLUMN=t()}(this,function(){"use strict";var e=function(e,t){for(var n=-1,r=0;r<t.length;r++)if(t[r]==e){n=r;break}return n},t=function(t,n,r,i){for(var d=[],o=[t],a=-1;a!=o.length;)a=o.length,n.forEach(function(t){e(t[r],o)>-1&&e(t[i],o)==-1&&(d.push(t[i]),o.push(t[i]))});return d},n={indexOf:e,descendantsIds:t},r={render:function(){var e=this,t=e.$createElement,n=e._self._c||t;return n("el-table-column",{attrs:{prop:e.prop,label:e.label,width:e.width},scopedSlots:e._u([["default",function(t){return[e.hasChild(t.row)?n("span",{on:{click:function(n){n.preventDefault(),e.doexpanded(t.$index,t.row)}}},[n("span",{style:{paddingLeft:e.paddingLeft(t.row)}},[n("i",{class:"el-icon-caret-"+e.icon(t.row)}),e._v(" "),n("i",{class:e.floderIcon(t.row),staticStyle:{"padding-right":"7px"}})]),n("span",[e._v(e._s(t.row[e.prop]))])]):e._e(),e.hasChild(t.row)?e._e():n("span",[n("span",{style:{paddingLeft:e.paddingLeft(t.row)}},[n("i",{class:e.fileIcon,staticStyle:{"padding-right":"7px","padding-left":"18px"}})]),n("span",[e._v(e._s(t.row[e.prop]))])])]}]])})},staticRenderFns:[],name:"el-table-tree-column",props:{prop:{type:String},label:{type:String},width:{type:String},treeKey:{type:String,default:"id"},childNumKey:{type:String,default:"child_num"},parentKey:{type:String,default:"parent_id"},levelKey:{type:String,default:"depth"},childKey:{type:String,default:"children"},fileIcon:{type:String,default:"el-icon-file"},folderIcon:{type:String,default:"el-icon-folder"}},computed:{owner:function(){for(var e=this.$parent;e&&!e.tableId;)e=e.$parent;return e}},methods:{floderIcon:function(e){var t=(this.hasChild(e),e.$extra&&e.$extra.expanded),n=this.folderIcon,r=this.folderIcon+"-open";return t?r:n},hasChild:function(e){return void 0!=e[this.childNumKey]?e[this.childNumKey]>0:void 0!=e[this.childKey]&&e[this.childKey].length>0},paddingLeft:function(e){return 14*parseInt(e[this.levelKey])+"px"},icon:function(e){return e.$extra&&e.$extra.expanded?"bottom":"right"},doexpanded:function(e,t){var r=this,i=JSON.parse(JSON.stringify(this.owner.store.states._data));if(void 0==i[e].$extra?i[e].$extra={expanded:!0}:i[e].$extra.expanded=!i[e].$extra.expanded,i[e].$extra.expanded){for(var d=i.slice(0,e+1),o=0;o<e+1;)i.shift(),o++;i=d.concat(t[r.childKey]).concat(i)}else{var a=t[r.treeKey],l=[],p=n.descendantsIds(a,i,this.parentKey,this.treeKey);i.forEach(function(e){n.indexOf(e[r.treeKey],p)==-1&&l.push(e)}),i=l}this.owner.store.commit("setData",i)}}};return"undefined"!=typeof window&&window.Vue&&Vue.component(r.name,r),r});
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.ELEMENT_TREE_COLUMN = factory());
+}(this, (function () { 'use strict';
+
+var indexOf = function indexOf(val, arr) {
+    var has = -1;
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i] == val) {
+            has = i;
+            break;
+        }
+    }
+    return has;
+};
+
+var descendantsIds = function descendantsIds(id, data, parentKey, treeKey) {
+    var result = [],
+        compare = [id],
+        length = -1;
+    while (length != compare.length) {
+        length = compare.length;
+        data.forEach(function (item) {
+            if (indexOf(item[parentKey], compare) > -1 && indexOf(item[treeKey], compare) == -1) {
+                result.push(item[treeKey]);
+                compare.push(item[treeKey]);
+            }
+        });
+    }
+    return result;
+};
+var util = {
+    indexOf: indexOf,
+    descendantsIds: descendantsIds
+};
+
+var ElTableTreeItem$1 = { render: function render() {
+        var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('el-table-column', { attrs: { "prop": _vm.prop, "label": _vm.label, "width": _vm.width }, scopedSlots: _vm._u([["default", function (scope) {
+                return [_vm.hasChild(scope.row) ? _c('span', { on: { "click": function click($event) {
+                            $event.preventDefault();_vm.doexpanded(scope.$index, scope.row);
+                        } } }, [_c('span', { style: { paddingLeft: _vm.paddingLeft(scope.row) } }, [_c('i', { class: 'el-icon-caret-' + _vm.icon(scope.row) }), _vm._v(" "), _c('i', { class: _vm.floderIcon(scope.row), staticStyle: { "padding-right": "7px" } })]), _c('span', [_vm._v(_vm._s(scope.row[_vm.prop]))])]) : _vm._e(), !_vm.hasChild(scope.row) ? _c('span', [_c('span', { style: { paddingLeft: _vm.paddingLeft(scope.row) } }, [_c('i', { class: _vm.fileIcon, staticStyle: { "padding-right": "7px", "padding-left": "18px" } })]), _c('span', [_vm._v(_vm._s(scope.row[_vm.prop]))])]) : _vm._e()];
+            }]]) });
+    }, staticRenderFns: [],
+    name: 'el-table-tree-column',
+    props: {
+        prop: {
+            type: String
+        },
+        label: {
+            type: String
+        },
+        width: {
+            type: String
+        },
+        treeKey: {
+            type: String,
+            default: 'id'
+        },
+        childNumKey: {
+            type: String,
+            default: 'child_num'
+        },
+        parentKey: {
+            type: String,
+            default: 'parent_id'
+        },
+        levelKey: {
+            type: String,
+            default: 'depth'
+        },
+        childKey: {
+            type: String,
+            default: 'children'
+        },
+        fileIcon: {
+            type: String,
+            default: 'el-icon-file'
+        },
+        folderIcon: {
+            type: String,
+            default: 'el-icon-folder'
+        }
+    },
+    computed: {
+        owner: function owner() {
+            var parent = this.$parent;
+            while (parent && !parent.tableId) {
+                parent = parent.$parent;
+            }
+            return parent;
+        }
+    },
+    methods: {
+        floderIcon: function floderIcon(row) {
+            var hasChild = this.hasChild(row);
+            var expanded = row.$extra && row.$extra.expanded;
+            var floder = this.folderIcon,
+                floder_open = this.folderIcon + '-open';
+            return expanded ? floder_open : floder;
+        },
+        hasChild: function hasChild(row) {
+            if (row[this.childNumKey] != undefined) {
+                return row[this.childNumKey] > 0 ? true : false;
+            } else if (row[this.childKey] != undefined) {
+                return row[this.childKey].length > 0 ? true : false;
+            } else {
+                return false;
+            }
+        },
+        paddingLeft: function paddingLeft(row) {
+            return parseInt(row[this.levelKey]) * 14 + 'px';
+        },
+        icon: function icon(row) {
+            return row.$extra && row.$extra.expanded ? 'bottom' : 'right';
+        },
+        doexpanded: function doexpanded(index, row) {
+            var vm = this;
+            var data = JSON.parse(JSON.stringify(this.owner.store.states._data));
+            if (data[index].$extra == undefined) {
+                data[index].$extra = { expanded: true };
+            } else {
+                data[index].$extra.expanded = !data[index].$extra.expanded;
+            }
+            if (data[index].$extra.expanded) {
+                var prefix = data.slice(0, index + 1);
+                var i = 0;
+                while (i < index + 1) {
+                    data.shift();
+                    i++;
+                }
+                data = prefix.concat(row[vm.childKey]).concat(data);
+            } else {
+                var id = row[vm.treeKey],
+                    result = [];
+                var removeIds = util.descendantsIds(id, data, this.parentKey, this.treeKey);
+                data.forEach(function (item) {
+                    if (util.indexOf(item[vm.treeKey], removeIds) == -1) {
+                        result.push(item);
+                    }
+                });
+                data = result;
+            }
+            this.owner.store.commit('setData', data);
+        }
+    }
+};
+
+if (typeof window !== 'undefined' && window.Vue) {
+    Vue.component(ElTableTreeItem$1.name, ElTableTreeItem$1);
+}
+
+return ElTableTreeItem$1;
+
+})));

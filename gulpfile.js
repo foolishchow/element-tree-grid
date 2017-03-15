@@ -10,7 +10,7 @@ const path = require('path'),
     // commonjs = require('rollup-plugin-commonjs'),
     // replace = require('rollup-plugin-replace'),
     salad = require('postcss-salad'),
-    uglify = require('rollup-plugin-uglify');
+    uglify = require('gulp-uglify');
 
 const rollupConfig = {
     entry: './src/index.js',
@@ -31,26 +31,46 @@ const rollupConfig = {
     ],
     format: 'umd'
 }
-const rollupConfigMin = {};
-Object.assign(rollupConfigMin,rollupConfig)
-rollupConfigMin.plugins.push(uglify())
-const rollupConfigCommon = {};
-Object.assign(rollupConfigCommon,rollupConfig,{format:'cjs'})
+
+const rollupConfigCommon = {
+    entry: './src/index.js',
+    globals: { 'vue': 'Vue' },
+    moduleName: 'ELEMENT_TREE_COLUMN',
+    plugins: [
+        vue({
+            //there is sth. wrong with compileTemplate  ,so use `template` instead
+            compileTemplate: false,
+            styleToImports: true
+        }),
+        nodeResolve({
+            browser: true,
+            // jsnext: true,
+            main: true,
+            skip: ['vue']
+        }),
+        babel({ runtimeHelpers: false }),
+    ],
+    format: 'cjs'
+};
+
 gulp.task('commonjs',()=>{
     return gulp.src(['./src/*.js', './src/*.vue'])
         .pipe(rollup(rollupConfigCommon))
         .pipe(rename('tree-table.common.js'))
         .pipe(gulp.dest('./dist'))
 });
+
 gulp.task('dev', () => {
     return gulp.src(['./src/*.js', './src/*.vue'])
         .pipe(rollup(rollupConfig))
         .pipe(rename('tree-table.js'))
         .pipe(gulp.dest('./dist'))
 });
+
 gulp.task('dev-min', () => {
     return gulp.src(['./src/*.js', './src/*.vue'])
-        .pipe(rollup(rollupConfigMin))
+        .pipe(rollup(rollupConfig))
+        .pipe(uglify())
         .pipe(rename('tree-table.min.js'))
         .pipe(gulp.dest('./dist'))
 });

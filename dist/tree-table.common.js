@@ -1,1 +1,143 @@
-"use strict";var indexOf=function(e,t){for(var n=-1,r=0;r<t.length;r++)if(t[r]==e){n=r;break}return n},descendantsIds=function(e,t,n,r){for(var i=[],d=[e],a=-1;a!=d.length;)a=d.length,t.forEach(function(e){indexOf(e[n],d)>-1&&indexOf(e[r],d)==-1&&(i.push(e[r]),d.push(e[r]))});return i},util={indexOf:indexOf,descendantsIds:descendantsIds},ElTableTreeItem$1={render:function(){var e=this,t=e.$createElement,n=e._self._c||t;return n("el-table-column",{attrs:{prop:e.prop,label:e.label,width:e.width},scopedSlots:e._u([["default",function(t){return[e.hasChild(t.row)?n("span",{on:{click:function(n){n.preventDefault(),e.doexpanded(t.$index,t.row)}}},[n("span",{style:{paddingLeft:e.paddingLeft(t.row)}},[n("i",{class:"el-icon-caret-"+e.icon(t.row)}),e._v(" "),n("i",{class:e.floderIcon(t.row),staticStyle:{"padding-right":"7px"}})]),n("span",[e._v(e._s(t.row[e.prop]))])]):e._e(),e.hasChild(t.row)?e._e():n("span",[n("span",{style:{paddingLeft:e.paddingLeft(t.row)}},[n("i",{class:e.fileIcon,staticStyle:{"padding-right":"7px","padding-left":"18px"}})]),n("span",[e._v(e._s(t.row[e.prop]))])])]}]])})},staticRenderFns:[],name:"el-table-tree-column",props:{prop:{type:String},label:{type:String},width:{type:String},treeKey:{type:String,default:"id"},childNumKey:{type:String,default:"child_num"},parentKey:{type:String,default:"parent_id"},levelKey:{type:String,default:"depth"},childKey:{type:String,default:"children"},fileIcon:{type:String,default:"el-icon-file"},folderIcon:{type:String,default:"el-icon-folder"}},computed:{owner:function(){for(var e=this.$parent;e&&!e.tableId;)e=e.$parent;return e}},methods:{floderIcon:function(e){var t=(this.hasChild(e),e.$extra&&e.$extra.expanded),n=this.folderIcon,r=this.folderIcon+"-open";return t?r:n},hasChild:function(e){return void 0!=e[this.childNumKey]?e[this.childNumKey]>0:void 0!=e[this.childKey]&&e[this.childKey].length>0},paddingLeft:function(e){return 14*parseInt(e[this.levelKey])+"px"},icon:function(e){return e.$extra&&e.$extra.expanded?"bottom":"right"},doexpanded:function(e,t){var n=this,r=JSON.parse(JSON.stringify(this.owner.store.states._data));if(void 0==r[e].$extra?r[e].$extra={expanded:!0}:r[e].$extra.expanded=!r[e].$extra.expanded,r[e].$extra.expanded){for(var i=r.slice(0,e+1),d=0;d<e+1;)r.shift(),d++;r=i.concat(t[n.childKey]).concat(r)}else{var a=t[n.treeKey],o=[],l=util.descendantsIds(a,r,this.parentKey,this.treeKey);r.forEach(function(e){util.indexOf(e[n.treeKey],l)==-1&&o.push(e)}),r=o}this.owner.store.commit("setData",r)}}};"undefined"!=typeof window&&window.Vue&&Vue.component(ElTableTreeItem$1.name,ElTableTreeItem$1),module.exports=ElTableTreeItem$1;
+'use strict';
+
+var indexOf = function indexOf(val, arr) {
+    var has = -1;
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i] == val) {
+            has = i;
+            break;
+        }
+    }
+    return has;
+};
+
+var descendantsIds = function descendantsIds(id, data, parentKey, treeKey) {
+    var result = [],
+        compare = [id],
+        length = -1;
+    while (length != compare.length) {
+        length = compare.length;
+        data.forEach(function (item) {
+            if (indexOf(item[parentKey], compare) > -1 && indexOf(item[treeKey], compare) == -1) {
+                result.push(item[treeKey]);
+                compare.push(item[treeKey]);
+            }
+        });
+    }
+    return result;
+};
+var util = {
+    indexOf: indexOf,
+    descendantsIds: descendantsIds
+};
+
+var ElTableTreeItem$1 = { template: "<el-table-column :prop=\"prop\" :label=\"label\" :width=\"width\"><template scope=\"scope\"><span @click.prevent=\"doexpanded(scope.$index,scope.row)\" v-if=\"hasChild(scope.row)\"><span :style=\"{paddingLeft : paddingLeft(scope.row)}\"><i :class=\"'el-icon-caret-'+icon(scope.row)\"></i> <i :class=\"floderIcon(scope.row)\" style=\"padding-right: 7px\"></i> </span><span>{{scope.row[prop]}}</span> </span><span v-if=\"!hasChild(scope.row)\"><span :style=\"{paddingLeft : paddingLeft(scope.row)}\"><i :class=\"fileIcon\" style=\"padding-right: 7px;padding-left:18px\"></i> </span><span>{{scope.row[prop]}}</span></span></template></el-table-column>",
+    name: 'el-table-tree-column',
+    props: {
+        prop: {
+            type: String
+        },
+        label: {
+            type: String
+        },
+        width: {
+            type: String
+        },
+        treeKey: {
+            type: String,
+            default: 'id'
+        },
+        childNumKey: {
+            type: String,
+            default: 'child_num'
+        },
+        parentKey: {
+            type: String,
+            default: 'parent_id'
+        },
+        levelKey: {
+            type: String,
+            default: 'depth'
+        },
+        childKey: {
+            type: String,
+            default: 'children'
+        },
+        fileIcon: {
+            type: String,
+            default: 'el-icon-file'
+        },
+        folderIcon: {
+            type: String,
+            default: 'el-icon-folder'
+        }
+    },
+    computed: {
+        owner: function owner() {
+            var parent = this.$parent;
+            while (parent && !parent.tableId) {
+                parent = parent.$parent;
+            }
+            return parent;
+        }
+    },
+    methods: {
+        floderIcon: function floderIcon(row) {
+            var hasChild = this.hasChild(row);
+            var expanded = row.$extra && row.$extra.expanded;
+            var floder = this.folderIcon,
+                floder_open = this.folderIcon + '-open';
+            return expanded ? floder_open : floder;
+        },
+        hasChild: function hasChild(row) {
+            if (row[this.childNumKey] != undefined) {
+                return row[this.childNumKey] > 0 ? true : false;
+            } else if (row[this.childKey] != undefined) {
+                return row[this.childKey].length > 0 ? true : false;
+            } else {
+                return false;
+            }
+        },
+        paddingLeft: function paddingLeft(row) {
+            return parseInt(row[this.levelKey]) * 14 + 'px';
+        },
+        icon: function icon(row) {
+            return row.$extra && row.$extra.expanded ? 'bottom' : 'right';
+        },
+        doexpanded: function doexpanded(index, row) {
+            var vm = this;
+            var data = JSON.parse(JSON.stringify(this.owner.store.states._data));
+            if (data[index].$extra == undefined) {
+                data[index].$extra = { expanded: true };
+            } else {
+                data[index].$extra.expanded = !data[index].$extra.expanded;
+            }
+            if (data[index].$extra.expanded) {
+                var prefix = data.slice(0, index + 1);
+                var i = 0;
+                while (i < index + 1) {
+                    data.shift();
+                    i++;
+                }
+                data = prefix.concat(row[vm.childKey]).concat(data);
+            } else {
+                var id = row[vm.treeKey],
+                    result = [];
+                var removeIds = util.descendantsIds(id, data, this.parentKey, this.treeKey);
+                data.forEach(function (item) {
+                    if (util.indexOf(item[vm.treeKey], removeIds) == -1) {
+                        result.push(item);
+                    }
+                });
+                data = result;
+            }
+            this.owner.store.commit('setData', data);
+        }
+    }
+};
+
+if (typeof window !== 'undefined' && window.Vue) {
+    Vue.component(ElTableTreeItem$1.name, ElTableTreeItem$1);
+}
+
+module.exports = ElTableTreeItem$1;

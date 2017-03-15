@@ -9,6 +9,7 @@ const indexOf = (val, arr) => {
     return has;
 }
 
+
 const descendantsIds = (id, data, parentKey, treeKey) => {
     var result = [],
         compare = [id],
