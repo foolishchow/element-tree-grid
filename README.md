@@ -12,6 +12,7 @@ npm install #or yarn
 gulp 
 ```
 
+
 > useage   
 
 ```javascript
@@ -31,10 +32,10 @@ gulp
 | prop          | same as `el-table-item`  |                 |
 | label         | same as `el-table-item`  |                 |
 | width         | same as `el-table-item`  |                 |
-| treeKey       | the key for neasted parse|  type:String, default:'id' |
-| childNumKey   | the key of childNum      |  type:String, default:'child_num' |
-| parentKey     | the key parent_id        |  type:String, default:'parent_id'|
-| levelKey      | the key of node's depth  |  type:String, default:'depth'|
-| childKey      | the key of node's children been placed  |  type:String, default:'children'|
-| fileIcon      | file icon className  |  type:String, default:'el-icon-file'|
-| folderIcon      | folder icon className ,when opend use: `folderIcon-open`  |  type:String, default:'el-icon-folder'|
+| treeKey       | the key for neasted parse|  type:String,<br> default:'id' |
+| childNumKey   | the key of childNum      |  type:String,<br> default:'child_num' |
+| parentKey     | the key parent_id        |  type:String, <br>default:'parent_id'|
+| levelKey      | the key of node's depth  |  type:String,<br> default:'depth'|
+| childKey      | the key of node's children been placed  |  type:String, <br>default:'children'|
+| fileIcon      | file icon className  |  type:String, <br>default:'el-icon-file'|
+| folderIcon      | folder icon className ,when opend use: `folderIcon-open`  |  type:String,<br> default:'el-icon-folder'|
