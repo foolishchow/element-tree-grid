@@ -27,26 +27,36 @@ const rollupConfig = {
             main: true,
             skip: ['vue']
         }),
-        css({
-            output: './dist/tree-table.css',
-            postcss: [
-                salad()
-            ]
-        }),
         babel({ runtimeHelpers: false }),
     ],
     format: 'umd'
 }
-
+const rollupConfigMin = {};
+Object.assign(rollupConfigMin,rollupConfig)
+rollupConfigMin.plugins.push(uglify())
+const rollupConfigCommon = {};
+Object.assign(rollupConfigCommon,rollupConfig,{format:'cjs'})
+gulp.task('commonjs',()=>{
+    return gulp.src(['./src/*.js', './src/*.vue'])
+        .pipe(rollup(rollupConfigCommon))
+        .pipe(rename('tree-table.common.js'))
+        .pipe(gulp.dest('./dist'))
+});
 gulp.task('dev', () => {
     return gulp.src(['./src/*.js', './src/*.vue'])
         .pipe(rollup(rollupConfig))
         .pipe(rename('tree-table.js'))
         .pipe(gulp.dest('./dist'))
-})
+});
+gulp.task('dev-min', () => {
+    return gulp.src(['./src/*.js', './src/*.vue'])
+        .pipe(rollup(rollupConfigMin))
+        .pipe(rename('tree-table.min.js'))
+        .pipe(gulp.dest('./dist'))
+});
 
 gulp.task('watch',()=>{
-    gulp.watch(['./src/*.js', './src/*.vue'],['dev'])
+    gulp.watch(['./src/*.js', './src/*.vue'],['dev','dev-min','commonjs'])
 })
 
-gulp.task('default',['dev','watch'])
+gulp.task('default',['dev','dev-min','watch'])

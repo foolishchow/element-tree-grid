@@ -4,13 +4,13 @@
             <span @click.prevent="doexpanded(scope.$index,scope.row)" v-if="hasChild(scope.row)">
                 <span :style="{paddingLeft : paddingLeft(scope.row)}">
                     <i :class="'el-icon-caret-'+icon(scope.row)"></i>
-                    <i :class="'el-tree-tabel-column-type-icon '+floderIcon(scope.row)" ></i>
+                    <i :class="floderIcon(scope.row)" style="padding-right: 7px;"></i>
                 </span>
                 <span>{{scope.row[prop]}}</span>
             </span>
             <span v-if="!hasChild(scope.row)">
                 <span :style="{paddingLeft : paddingLeft(scope.row)}">
-                    <i :class="'el-tree-tabel-column-type-icon is-file '+fileIcon"></i>
+                    <i :class="fileIcon" style="padding-right: 7px;padding-left:18px"></i>
                 </span>
                 <span>{{scope.row[prop]}}</span>
             </span>
@@ -76,10 +76,6 @@ export default {
             var  floder = this.folderIcon,
             floder_open = this.folderIcon+'-open';
             return expanded ? floder_open : floder;
-            // return {
-            //     this.folderIcon: !expanded,
-            //     : expanded,
-            // }
         },
         hasChild(row){
             if(row[this.childNumKey] != undefined){
@@ -128,10 +124,4 @@ export default {
 }
 </script>
 <style>
-    .el-tree-tabel-column-type-icon{
-        padding-right: 7px;
-    }
-    .el-tree-tabel-column-type-icon.is-file{
-        padding-left: 18px;
-    }
 </style>

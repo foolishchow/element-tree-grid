@@ -2,7 +2,7 @@
   "name": "element-tree-grid",
   "version": "0.0.1",
   "description": "element tree grid with vue ",
-  "main": "dist/index.js",
+  "main": "dist/tree-table.common.js",
   "scripts": {
     "test": ""
   },
