@@ -28,7 +28,7 @@ gulp
 - attributes
 
 | name          | description              | values          |
-| ------------- |:------------------------:| ---------------:|
+| ------------- |:------------------------|:---------------:|
 | prop          | same as `el-table-item`  |                 |
 | label         | same as `el-table-item`  |                 |
 | width         | same as `el-table-item`  |                 |
