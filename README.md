@@ -12,6 +12,16 @@ npm install #or yarn
 gulp 
 ```
 
+- use with node
+```
+npm install element-tree-grid --save
+```
+in you project 
+```
+var ElTreeGrid = require('element-tree-grid')
+Vue.component(ElTreeGrid.name,ElTreeGrid)
+```
+
 
 > useage   
 
