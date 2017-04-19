@@ -1,1 +1,0 @@
-{"version":3,"sources":["core/index.js"],"names":[],"mappings":"AAAA;;;;;;AAEA;;;;AACA;;;;;;kBAEe;AACb,kCADa;AAEb,kCAFa","file":"core/index.js","sourcesContent":["'use strict';\n\nimport functions from './functions.es6.js';\nimport variables from './variables.es6.js';\n\nexport default {\n  functions,\n  variables\n};\n"],"sourceRoot":"/source/"}
