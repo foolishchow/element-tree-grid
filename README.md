@@ -17,8 +17,13 @@ gulp
 npm install element-tree-grid --save
 ```
 in you project 
+
 ```
-var ElTreeGrid = require('element-tree-grid')
+//common 
+var ElTreeGrid = require('element-tree-grid');
+Vue.component(ElTreeGrid.name,ElTreeGrid);
+//import from source code . so you can build them with your webpack or rollup ..
+import ElTableTreeColumn from  'element-tree-grid/src/index.vue';
 Vue.component(ElTreeGrid.name,ElTreeGrid)
 ```
 
