@@ -1,0 +1,9 @@
+.gitignore
+
+.idea/
+node_modules/
+
+test/
+.travis.yml
+
+gulpfile.js
