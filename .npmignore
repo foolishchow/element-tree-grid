@@ -5,3 +5,4 @@ gulpfile.js
 .babelrc
 example
 .git
+.gitignore
