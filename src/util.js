@@ -25,7 +25,20 @@ const descendantsIds = (id, data, parentKey, treeKey) => {
     }
     return result;
 }
+const hash = ()=> Math.floor(Math.random()*Math.random()*Math.random()*Math.random()*1000);
+const index = (hash,data) =>{
+    var i = 0;
+    while(data[i] ) {
+        if( data[i].$extra && data[i].$extra.hash == hash ){
+            break;
+        }
+        i++;
+    };
+    return i;
+}
 export default {
     indexOf,
-    descendantsIds
+    descendantsIds,
+    hash,
+    index
 }

@@ -1,0 +1,32 @@
+{
+  "name": "postcss-shape",
+  "version": "0.0.1",
+  "description": "draw some basic shape with css",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint . && jscs .",
+    "test": "tape test.js | tap-spec"
+  },
+  "dependencies": {
+    "postcss": "^5.0.19"
+  },
+  "devDependencies": {
+    "eslint": "^2.3.0",
+    "jscs": "^2.11.0",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.5.0"
+  },
+  "engines": {
+    "node": ">=0.12.0"
+  },
+  "repository": "git@github.com:baiyaaaaa/postcss-shape.git",
+  "bugs": "https://github.com/baiyaaaaa/postcss-shape/issues",
+  "keywords": [
+    "postcss",
+    "css",
+    "postcss-plugin",
+    "shape"
+  ],
+  "author": "https://github.com/baiyaaaaa",
+  "license": "MIT"
+}

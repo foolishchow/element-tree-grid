@@ -26,12 +26,27 @@ var descendantsIds = function descendantsIds(id, data, parentKey, treeKey) {
     }
     return result;
 };
+var hash = function hash() {
+    return Math.floor(Math.random() * Math.random() * Math.random() * Math.random() * 1000);
+};
+var index = function index(hash, data) {
+    var i = 0;
+    while (data[i]) {
+        if (data[i].$extra && data[i].$extra.hash == hash) {
+            break;
+        }
+        i++;
+    }
+    return i;
+};
 var util = {
     indexOf: indexOf,
-    descendantsIds: descendantsIds
+    descendantsIds: descendantsIds,
+    hash: hash,
+    index: index
 };
 
-var ElTableTreeItem$1 = { template: "<el-table-column :prop=\"prop\" :label=\"label\" :width=\"width\"><template scope=\"scope\"><span @click.prevent=\"doexpanded(scope.$index,scope.row)\" v-if=\"hasChild(scope.row)\"><span :style=\"{paddingLeft : paddingLeft(scope.row)}\"><i :class=\"'el-icon-caret-'+icon(scope.row)\"></i> <i :class=\"floderIcon(scope.row)\" style=\"padding-right: 7px\"></i> </span><span>{{scope.row[prop]}}</span> </span><span v-if=\"!hasChild(scope.row)\"><span :style=\"{paddingLeft : paddingLeft(scope.row)}\"><i :class=\"fileIcon\" style=\"padding-right: 7px;padding-left:18px\"></i> </span><span>{{scope.row[prop]}}</span></span></template></el-table-column>",
+var ElTableTreeItem$1 = { template: "<el-table-column :prop=\"prop\" :label=\"label\" :width=\"width\"><template scope=\"scope\"><span v-if=\"hasChild(scope.row)\" @click.prevent=\"doexpanded(scope.$index,scope.row)\"><span :style=\"{paddingLeft : paddingLeft(scope.row)}\"><i :class=\"icon(scope.row)\"></i> <i :class=\"floderIcon(scope.row)\" style=\"padding-right: 7px\"></i> </span><span>{{scope.row[prop]}}</span> </span><span v-if=\"!hasChild(scope.row)\"><span :style=\"{paddingLeft : paddingLeft(scope.row)}\"><i :class=\"fileIcon\" style=\"padding-right: 7px;padding-left:18px\"></i> </span><span>{{scope.row[prop]}}</span></span></template></el-table-column>",
     name: 'el-table-tree-column',
     props: {
         prop: {
@@ -70,6 +85,10 @@ var ElTableTreeItem$1 = { template: "<el-table-column :prop=\"prop\" :label=\"la
         folderIcon: {
             type: String,
             default: 'el-icon-folder'
+        },
+        remote: {
+            type: Function,
+            default: null
         }
     },
     computed: {
@@ -81,9 +100,12 @@ var ElTableTreeItem$1 = { template: "<el-table-column :prop=\"prop\" :label=\"la
             return parent;
         }
     },
+    data: function data() {
+        return { loading: false };
+    },
+
     methods: {
         floderIcon: function floderIcon(row) {
-            var hasChild = this.hasChild(row);
             var expanded = row.$extra && row.$extra.expanded;
             var floder = this.folderIcon,
                 floder_open = this.folderIcon + '-open';
@@ -102,7 +124,8 @@ var ElTableTreeItem$1 = { template: "<el-table-column :prop=\"prop\" :label=\"la
             return parseInt(row[this.levelKey]) * 14 + 'px';
         },
         icon: function icon(row) {
-            return row.$extra && row.$extra.expanded ? 'bottom' : 'right';
+            if (row.$extra && row.$extra.loading == true) return 'el-icon-loading';
+            return row.$extra && row.$extra.expanded ? 'el-icon-caret-bottom' : 'el-icon-caret-right';
         },
         doexpanded: function doexpanded(index, row) {
             var vm = this;
@@ -113,13 +136,42 @@ var ElTableTreeItem$1 = { template: "<el-table-column :prop=\"prop\" :label=\"la
                 data[index].$extra.expanded = !data[index].$extra.expanded;
             }
             if (data[index].$extra.expanded) {
-                var prefix = data.slice(0, index + 1);
-                var i = 0;
-                while (i < index + 1) {
-                    data.shift();
-                    i++;
+                if (this.remote != null) {
+                    var hash = util.hash();
+                    data[index].$extra.expanded = false;
+                    data[index].$extra.hash = hash;
+                    data[index].$extra.loading = true;
+                    vm.owner.store.commit('setData', data);
+                    this.remote(row, function (result) {
+                        var list = vm.owner.store.states._data;
+                        var _index = util.index(hash, list);
+                        list[_index].$extra = {
+                            loading: false,
+                            expanded: result && result.length > 0 ? true : false
+                        };
+                        if (result && result.length > 0) {
+                            var prefix = list.slice(0, _index + 1);
+                            var i = 0;
+                            while (i < _index + 1) {
+                                list.shift();
+                                i++;
+                            }
+                            list = prefix.concat(result).concat(list);
+                        } else {
+                            list[_index][vm.childNumKey] = 0;
+                        }
+                        vm.owner.store.commit('setData', list);
+                    });
+                } else {
+                    var prefix = data.slice(0, index + 1);
+                    var i = 0;
+                    while (i < index + 1) {
+                        data.shift();
+                        i++;
+                    }
+                    data = prefix.concat(row[vm.childKey]).concat(data);
+                    this.owner.store.commit('setData', data);
                 }
-                data = prefix.concat(row[vm.childKey]).concat(data);
             } else {
                 var id = row[vm.treeKey],
                     result = [];
@@ -130,8 +182,8 @@ var ElTableTreeItem$1 = { template: "<el-table-column :prop=\"prop\" :label=\"la
                     }
                 });
                 data = result;
+                this.owner.store.commit('setData', data);
             }
-            this.owner.store.commit('setData', data);
         }
     }
 };

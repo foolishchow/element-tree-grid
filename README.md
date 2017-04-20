@@ -5,7 +5,7 @@ tree grid extends `element` ui  with `vue`
 > start
 
 - clone to your project
-```
+```shell
 git clone https://github.com/foolishchow/element-tree-grid.git
 cd element-tree-grid
 npm install #or yarn
@@ -13,12 +13,12 @@ gulp
 ```
 
 - use with node
-```
+```shell
 npm install element-tree-grid --save
 ```
 in you project 
 
-```
+```javascript
 //common 
 var ElTreeGrid = require('element-tree-grid');
 Vue.component(ElTreeGrid.name,ElTreeGrid);
@@ -30,16 +30,49 @@ Vue.component(ElTreeGrid.name,ElTreeGrid)
 
 > useage   
 
-```javascript
-<el-table :data="model.menus" border max-height="250">
-    <el-table-tree-column 
-        file-icon="icon icon-file" 
-        folder-icon="icon icon-folder" 
-        prop="label" label="菜单名" width="220"></el-table-tree-column>
-    <el-table-column prop="description" label="描述"   width="180"></el-table-column>
-</el-table>
-```
-
+- common useage
+    ```html
+    <el-table :data="model.menus" border max-height="250">
+        <el-table-tree-column 
+            file-icon="icon icon-file" 
+            folder-icon="icon icon-folder" 
+            prop="label" label="labelname" width="220"></el-table-tree-column>
+        <el-table-column prop="description" label="description"   width="180"></el-table-column>
+    </el-table>
+    ```
+- get children from remote
+    - html
+    ```html
+    <div id="app" style="padding: 30px;">
+        <el-table :data="model.menus" border max-height="400">
+            <el-table-tree-column 
+                :remote="remote"
+                file-icon="icon icon-file" 
+                folder-icon="icon icon-folder" 
+                prop="label" label="MenuName" width="320"></el-table-tree-column>
+            <el-table-column prop="id" label="id" width="180"></el-table-column>
+            <el-table-column prop="description" label="Description" :show-overflow-tooltip="true" width="180"></el-table-column>
+        </el-table>
+    </div>
+    ```
+    - javascript   
+    ```javascript
+    new Vue({
+        el: "#app",
+        data: {
+            model: {
+                menus: trees
+            }
+        },
+        methods:{
+            remote(row,callback){
+                setTimeout(function() {
+                    callback(row.children)
+                },500)
+            }
+        }
+    })
+    ```
 - attributes
 
 | name          | description              | values          |
@@ -54,3 +87,6 @@ Vue.component(ElTreeGrid.name,ElTreeGrid)
 | childKey      | the key of node's children been placed  |  type:String, <br>default:'children'|
 | fileIcon      | file icon className  |  type:String, <br>default:'el-icon-file'|
 | folderIcon      | folder icon className ,when opend use: `folderIcon-open`  |  type:String,<br> default:'el-icon-folder'|
+| remote       | remote method to get children | type:Function,<br/>default:null|
+
+

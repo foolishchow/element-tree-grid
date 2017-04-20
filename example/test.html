@@ -14,13 +14,14 @@
 
 <body>
     <div id="app" style="padding: 30px;">
-        <el-table :data="model.menus" border max-height="250">
-            <el-table-column prop="id" label="id" width="180"></el-table-column>
+        <el-table :data="model.menus" border max-height="400">
             <el-table-tree-column 
+                :remote="remote"
                 file-icon="icon icon-file" 
                 folder-icon="icon icon-folder" 
-                prop="label" label="菜单名" width="220"></el-table-tree-column>
-            <el-table-column prop="description" label="描述" :show-overflow-tooltip="true" width="180"></el-table-column>
+                prop="label" label="MenuName" width="320"></el-table-tree-column>
+            <el-table-column prop="id" label="id" width="180"></el-table-column>
+            <el-table-column prop="description" label="Description" :show-overflow-tooltip="true" width="180"></el-table-column>
         </el-table>
     </div>
     <script type="text/javascript">
@@ -29,6 +30,13 @@
         data: {
             model: {
                 menus: trees
+            }
+        },
+        methods:{
+            remote(row,callback){
+                setTimeout(function() {
+                    callback(row.children)
+                },500)
             }
         }
     })

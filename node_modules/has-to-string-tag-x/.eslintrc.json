@@ -1,0 +1,15 @@
+{
+  "root": true,
+  "extends": "@ljharb",
+  "plugins": [
+    "import"
+  ],
+  "rules": {
+    "indent": ["error", 2, {
+      "SwitchCase": 1
+    }],
+    "global-require": 0,
+    "max-params": 0,
+    "block-scoped-var": 1
+  }
+}

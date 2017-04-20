@@ -1,0 +1,11 @@
+div[active] {
+	background-color: red;
+}
+
+div[data-active] {
+	background-color: white;
+}
+
+div[data-active~="true"] {
+	background-color: blue;
+}
