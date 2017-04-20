@@ -5,27 +5,27 @@ tree grid extends `element` ui  with `vue`
 > start
 
 - clone to your project
-```shell
-git clone https://github.com/foolishchow/element-tree-grid.git
-cd element-tree-grid
-npm install #or yarn
-gulp 
-```
+    ```shell
+    git clone https://github.com/foolishchow/element-tree-grid.git
+    cd element-tree-grid
+    npm install #or yarn
+    gulp 
+    ```
 
 - use with node
-```shell
-npm install element-tree-grid --save
-```
+    ```shell
+    npm install element-tree-grid --save
+    ```
 in you project 
 
-```javascript
-//common 
-var ElTreeGrid = require('element-tree-grid');
-Vue.component(ElTreeGrid.name,ElTreeGrid);
-//import from source code . so you can build them with your webpack or rollup ..
-import ElTableTreeColumn from  'element-tree-grid/src/index.vue';
-Vue.component(ElTreeGrid.name,ElTreeGrid)
-```
+    ```javascript
+    //common 
+    var ElTreeGrid = require('element-tree-grid');
+    Vue.component(ElTreeGrid.name,ElTreeGrid);
+    //import from source code . so you can build them with your webpack or rollup ..
+    import ElTableTreeColumn from  'element-tree-grid/src/index.vue';
+    Vue.component(ElTreeGrid.name,ElTreeGrid)
+    ```
 
 
 > useage   
@@ -75,18 +75,18 @@ Vue.component(ElTreeGrid.name,ElTreeGrid)
     ```
 - attributes
 
-| name          | description              | values          |
-| ------------- |:------------------------|:---------------:|
-| prop          | same as `el-table-item`  |                 |
-| label         | same as `el-table-item`  |                 |
-| width         | same as `el-table-item`  |                 |
-| treeKey       | the key for neasted parse|  type:String,<br> default:'id' |
-| childNumKey   | the key of childNum      |  type:String,<br> default:'child_num' |
-| parentKey     | the key parent_id        |  type:String, <br>default:'parent_id'|
-| levelKey      | the key of node's depth  |  type:String,<br> default:'depth'|
-| childKey      | the key of node's children been placed  |  type:String, <br>default:'children'|
-| fileIcon      | file icon className  |  type:String, <br>default:'el-icon-file'|
-| folderIcon      | folder icon className ,when opend use: `folderIcon-open`  |  type:String,<br> default:'el-icon-folder'|
-| remote       | remote method to get children | type:Function,<br/>default:null|
+    | name          | description              | values          |
+    | ------------- |:------------------------|:---------------:|
+    | prop          | same as `el-table-item`  |                 |
+    | label         | same as `el-table-item`  |                 |
+    | width         | same as `el-table-item`  |                 |
+    | treeKey       | the key for neasted parse|  type:String,<br> default:'id' |
+    | childNumKey   | the key of childNum      |  type:String,<br> default:'child_num' |
+    | parentKey     | the key parent_id        |  type:String, <br>default:'parent_id'|
+    | levelKey      | the key of node's depth  |  type:String,<br> default:'depth'|
+    | childKey      | the key of node's children been placed  |  type:String, <br>default:'children'|
+    | fileIcon      | file icon className  |  type:String, <br>default:'el-icon-file'|
+    | folderIcon      | folder icon className ,when opend use: `folderIcon-open`  |  type:String,<br> default:'el-icon-folder'|
+    | remote       | remote method to get children | type:Function,<br/>default:null|
 
 
