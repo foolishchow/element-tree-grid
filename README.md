@@ -13,10 +13,11 @@ tree grid extends `element` ui  with `vue`
     ```
 
 - use with node
+    - install
     ```shell
     npm install element-tree-grid --save
     ```
-in you project 
+    - in you project 
 
     ```javascript
     //common 
