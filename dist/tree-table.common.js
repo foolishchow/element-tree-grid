@@ -39,14 +39,112 @@ var index = function index(hash, data) {
     }
     return i;
 };
+
+var extend = function extend(target, source) {
+    for (var key in source) {
+        if (source.hasOwnProperty(key)) {
+            target[key] = source[key];
+        }
+    }
+};
 var util = {
     indexOf: indexOf,
     descendantsIds: descendantsIds,
     hash: hash,
-    index: index
+    index: index,
+    extend: extend
 };
 
-var ElTableTreeItem$1 = { template: "<el-table-column :prop=\"prop\" :label=\"label\" :width=\"width\"><template scope=\"scope\"><span v-if=\"hasChild(scope.row)\" @click.prevent=\"doexpanded(scope.$index,scope.row)\"><span :style=\"{paddingLeft : paddingLeft(scope.row)}\"><i :class=\"icon(scope.row)\"></i> <i :class=\"floderIcon(scope.row)\" style=\"padding-right: 7px\"></i> </span><span>{{scope.row[prop]}}</span> </span><span v-if=\"!hasChild(scope.row)\"><span :style=\"{paddingLeft : paddingLeft(scope.row)}\"><i :class=\"fileIcon\" style=\"padding-right: 7px;padding-left:18px\"></i> </span><span>{{scope.row[prop]}}</span></span></template></el-table-column>",
+var methods = {
+    floderIcon: function floderIcon(context, row) {
+        var expanded = false;
+        if (row.$extra) {
+            expanded = row.$extra.expanded;
+        } else {
+            expanded = context.props.expandAll;
+        }
+        var floder = context.props.folderIcon,
+            floder_open = context.props.folderIcon + '-open';
+        return expanded ? floder_open : floder;
+    },
+    hasChild: function hasChild(context, row) {
+        if (row[context.props.childNumKey] != undefined) {
+            return row[context.props.childNumKey] > 0 ? true : false;
+        } else if (row[context.props.childKey] != undefined) {
+            return row[context.props.childKey].length > 0 ? true : false;
+        } else {
+            return false;
+        }
+    },
+    paddingLeft: function paddingLeft(context, row) {
+        return parseInt(row[context.props.levelKey]) * 14 + 'px';
+    },
+    icon: function icon(row) {
+        if (row.$extra && row.$extra.loading == true) return 'el-icon-loading';
+        return row.$extra && row.$extra.expanded ? 'el-icon-caret-bottom' : 'el-icon-caret-right';
+    },
+    doexpanded: function doexpanded(instance, context, index, row) {
+        var owner = instance.store.table; //methods.owner(context.parent);
+        var vm = context.props;
+        var data = JSON.parse(JSON.stringify(owner.store.states._data));
+        if (data[index].$extra == undefined) {
+            data[index].$extra = { expanded: true };
+        } else {
+            data[index].$extra.expanded = !data[index].$extra.expanded;
+        }
+        if (data[index].$extra.expanded) {
+            if (vm.remote != null) {
+                var hash = util.hash();
+                data[index].$extra.expanded = false;
+                data[index].$extra.hash = hash;
+                data[index].$extra.loading = true;
+                owner.store.commit('setData', data);
+                vm.remote(row, function (result) {
+                    var list = owner.store.states._data;
+                    var _index = util.index(hash, list);
+                    list[_index].$extra = {
+                        loading: false,
+                        expanded: result && result.length > 0 ? true : false
+                    };
+                    if (result && result.length > 0) {
+                        var prefix = list.slice(0, _index + 1);
+                        var i = 0;
+                        while (i < _index + 1) {
+                            list.shift();
+                            i++;
+                        }
+                        list = prefix.concat(result).concat(list);
+                    } else {
+                        list[_index][vm.childNumKey] = 0;
+                    }
+                    owner.store.commit('setData', list);
+                });
+            } else {
+                var prefix = data.slice(0, index + 1);
+                var i = 0;
+                while (i < index + 1) {
+                    data.shift();
+                    i++;
+                }
+                data = prefix.concat(row[vm.childKey]).concat(data);
+                owner.store.commit('setData', data);
+            }
+        } else {
+            var id = row[vm.treeKey],
+                result = [];
+            var removeIds = util.descendantsIds(id, data, vm.parentKey, vm.treeKey);
+            data.forEach(function (item) {
+                if (util.indexOf(item[vm.treeKey], removeIds) == -1) {
+                    result.push(item);
+                }
+            });
+            data = result;
+            owner.store.commit('setData', data);
+        }
+    }
+};
+var ElTableTreeItem$1 = {
+    functional: true,
     name: 'el-table-tree-column',
     props: {
         prop: {
@@ -89,106 +187,53 @@ var ElTableTreeItem$1 = { template: "<el-table-column :prop=\"prop\" :label=\"la
         remote: {
             type: Function,
             default: null
+        },
+        expandAll: {
+            type: Boolean,
+            default: false
         }
     },
-    computed: {
-        owner: function owner() {
-            var parent = this.$parent;
-            while (parent && !parent.tableId) {
-                parent = parent.$parent;
-            }
-            return parent;
-        }
-    },
-    data: function data() {
-        return { loading: false };
-    },
-
-    methods: {
-        floderIcon: function floderIcon(row) {
-            var expanded = row.$extra && row.$extra.expanded;
-            var floder = this.folderIcon,
-                floder_open = this.folderIcon + '-open';
-            return expanded ? floder_open : floder;
-        },
-        hasChild: function hasChild(row) {
-            if (row[this.childNumKey] != undefined) {
-                return row[this.childNumKey] > 0 ? true : false;
-            } else if (row[this.childKey] != undefined) {
-                return row[this.childKey].length > 0 ? true : false;
-            } else {
-                return false;
-            }
-        },
-        paddingLeft: function paddingLeft(row) {
-            return parseInt(row[this.levelKey]) * 14 + 'px';
-        },
-        icon: function icon(row) {
-            if (row.$extra && row.$extra.loading == true) return 'el-icon-loading';
-            return row.$extra && row.$extra.expanded ? 'el-icon-caret-bottom' : 'el-icon-caret-right';
-        },
-        doexpanded: function doexpanded(index, row) {
-            var vm = this;
-            var data = JSON.parse(JSON.stringify(this.owner.store.states._data));
-            if (data[index].$extra == undefined) {
-                data[index].$extra = { expanded: true };
-            } else {
-                data[index].$extra.expanded = !data[index].$extra.expanded;
-            }
-            if (data[index].$extra.expanded) {
-                if (this.remote != null) {
-                    var hash = util.hash();
-                    data[index].$extra.expanded = false;
-                    data[index].$extra.hash = hash;
-                    data[index].$extra.loading = true;
-                    vm.owner.store.commit('setData', data);
-                    this.remote(row, function (result) {
-                        var list = vm.owner.store.states._data;
-                        var _index = util.index(hash, list);
-                        list[_index].$extra = {
-                            loading: false,
-                            expanded: result && result.length > 0 ? true : false
-                        };
-                        if (result && result.length > 0) {
-                            var prefix = list.slice(0, _index + 1);
-                            var i = 0;
-                            while (i < _index + 1) {
-                                list.shift();
-                                i++;
-                            }
-                            list = prefix.concat(result).concat(list);
-                        } else {
-                            list[_index][vm.childNumKey] = 0;
-                        }
-                        vm.owner.store.commit('setData', list);
-                    });
-                } else {
-                    var prefix = data.slice(0, index + 1);
-                    var i = 0;
-                    while (i < index + 1) {
-                        data.shift();
-                        i++;
+    render: function render(createElement, context) {
+        var h = createElement;
+        var floder = function floder(scope) {
+            return h('span', {
+                on: {
+                    click: function click($event) {
+                        $event.preventDefault();
+                        methods.doexpanded(scope, context, scope.$index, scope.row);
                     }
-                    data = prefix.concat(row[vm.childKey]).concat(data);
-                    this.owner.store.commit('setData', data);
                 }
-            } else {
-                var id = row[vm.treeKey],
-                    result = [];
-                var removeIds = util.descendantsIds(id, data, this.parentKey, this.treeKey);
-                data.forEach(function (item) {
-                    if (util.indexOf(item[vm.treeKey], removeIds) == -1) {
-                        result.push(item);
-                    }
-                });
-                data = result;
-                this.owner.store.commit('setData', data);
+            }, [h('span', { style: { paddingLeft: methods.paddingLeft(context, scope.row) } }, [h('i', { class: methods.icon(scope.row) }), scope._self._v(" "), h('i', {
+                class: methods.floderIcon(context, scope.row),
+                staticStyle: { "padding-right": "7px" }
+            })]), h('span', {}, scope.row[context.props.prop])]);
+        };
+        var leaf = function leaf(scope) {
+            return h('span', [h('span', {
+                style: { paddingLeft: methods.paddingLeft(context, scope.row) }
+            }, [h('i', {
+                class: context.props.fileIcon,
+                staticStyle: { "padding-right": "7px", "padding-left": "18px" }
+            })]), h('span', {}, scope.row[context.props.prop])]);
+        };
+        return h('el-table-column', {
+            attrs: {
+                'prop': context.props.prop,
+                'label': context.props.label,
+                'width': context.props.width
+            },
+            scopedSlots: {
+                default: function _default(scope) {
+                    return methods.hasChild(context, scope.row) ? [floder(scope)] : [leaf(scope)];
+                }
             }
-        }
+        });
     }
 };
 
+// import ElTableTreeItem from './index.vue'
 if (typeof window !== 'undefined' && window.Vue) {
+    // Vue.component(ElTableTreeItem.name, ElTableTreeItem)
     Vue.component(ElTableTreeItem$1.name, ElTableTreeItem$1);
 }
 

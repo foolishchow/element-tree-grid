@@ -1,5 +1,5 @@
 <template>
-    <el-table-column :prop="prop" :label="label" :width="width">
+    <component is="el-table-column" :prop="prop" :label="label" :width="width">
         <template scope="scope">
             <span v-if="hasChild(scope.row)" @click.prevent="doexpanded(scope.$index,scope.row)" >
                 <span :style="{paddingLeft : paddingLeft(scope.row)}">
@@ -15,7 +15,24 @@
                 <span>{{scope.row[prop]}}</span>
             </span>
         </template>
-    </el-table-column>
+    </component>
+    <!-- <el-table-column :prop="prop" :label="label" :width="width">
+        <template scope="scope">
+            <span v-if="hasChild(scope.row)" @click.prevent="doexpanded(scope.$index,scope.row)" >
+                <span :style="{paddingLeft : paddingLeft(scope.row)}">
+                    <i :class="icon(scope.row)"></i>
+                    <i :class="floderIcon(scope.row)" style="padding-right: 7px;"></i>
+                </span>
+                <span>{{scope.row[prop]}}</span>
+            </span>
+            <span v-if="!hasChild(scope.row)">
+                <span :style="{paddingLeft : paddingLeft(scope.row)}">
+                    <i :class="fileIcon" style="padding-right: 7px;padding-left:18px"></i>
+                </span>
+                <span>{{scope.row[prop]}}</span>
+            </span>
+        </template>
+    </el-table-column> -->
 </template>
 <script>
 import util from  './util'

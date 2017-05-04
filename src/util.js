@@ -36,9 +36,18 @@ const index = (hash,data) =>{
     };
     return i;
 }
+
+const extend = function(target,source){
+    for(var key in source){
+        if(source.hasOwnProperty(key)){
+            target[key] = source[key]
+        }
+    }
+}
 export default {
     indexOf,
     descendantsIds,
     hash,
-    index
+    index,
+    extend
 }
