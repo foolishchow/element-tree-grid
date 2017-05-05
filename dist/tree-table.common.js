@@ -40,28 +40,22 @@ var index = function index(hash, data) {
     return i;
 };
 
-var extend = function extend(target, source) {
-    for (var key in source) {
-        if (source.hasOwnProperty(key)) {
-            target[key] = source[key];
-        }
-    }
-};
 var util = {
     indexOf: indexOf,
     descendantsIds: descendantsIds,
     hash: hash,
-    index: index,
-    extend: extend
+    index: index
 };
+
+var _props;
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var methods = {
     floderIcon: function floderIcon(context, row) {
         var expanded = false;
         if (row.$extra) {
             expanded = row.$extra.expanded;
-        } else {
-            expanded = context.props.expandAll;
         }
         var floder = context.props.folderIcon,
             floder_open = context.props.folderIcon + '-open';
@@ -83,8 +77,40 @@ var methods = {
         if (row.$extra && row.$extra.loading == true) return 'el-icon-loading';
         return row.$extra && row.$extra.expanded ? 'el-icon-caret-bottom' : 'el-icon-caret-right';
     },
+    has: function has(context, item, list) {
+        var key = context.props.treeKey,
+            parentKey = context.props.parentKey;
+        var uniqueKey = item[key];
+        var has = false;
+        list.forEach(function (row) {
+            if (row[key] == uniqueKey || row[key] == item[parentKey]) {
+                has = true;
+            }
+        });
+        return has;
+    },
+    commit: function commit(context, instance, list) {
+        var owner = instance.store.table; //methods.owner(context.parent);
+        var states = instance.store.states;
+
+        var selection = states.selection;
+        owner.store.commit('setData', list);
+
+        owner.clearSelection();
+        var data = owner.store.states._data;
+        data.forEach(function (row) {
+            if (methods.has(context, row, selection)) {
+                owner.toggleRowSelection(row);
+            }
+        });
+        // states.selection = currentSelecttion;
+        // if(selection != undefined){
+        //     states.selection = selection;
+        // }
+    },
     doexpanded: function doexpanded(instance, context, index, row) {
         var owner = instance.store.table; //methods.owner(context.parent);
+        var states = instance.store.states;
         var vm = context.props;
         var data = JSON.parse(JSON.stringify(owner.store.states._data));
         if (data[index].$extra == undefined) {
@@ -98,7 +124,7 @@ var methods = {
                 data[index].$extra.expanded = false;
                 data[index].$extra.hash = hash;
                 data[index].$extra.loading = true;
-                owner.store.commit('setData', data);
+                methods.commit(context, instance, data);
                 vm.remote(row, function (result) {
                     var list = owner.store.states._data;
                     var _index = util.index(hash, list);
@@ -117,7 +143,7 @@ var methods = {
                     } else {
                         list[_index][vm.childNumKey] = 0;
                     }
-                    owner.store.commit('setData', list);
+                    methods.commit(context, instance, list);
                 });
             } else {
                 var prefix = data.slice(0, index + 1);
@@ -127,7 +153,8 @@ var methods = {
                     i++;
                 }
                 data = prefix.concat(row[vm.childKey]).concat(data);
-                owner.store.commit('setData', data);
+                // owner.store.commit('setData', data);
+                methods.commit(context, instance, data);
             }
         } else {
             var id = row[vm.treeKey],
@@ -139,60 +166,59 @@ var methods = {
                 }
             });
             data = result;
-            owner.store.commit('setData', data);
+            methods.commit(context, instance, data);
+            // owner.store.commit('setData', data);
         }
     }
 };
 var ElTableTreeItem$1 = {
     functional: true,
     name: 'el-table-tree-column',
-    props: {
+    props: (_props = {
         prop: {
             type: String
         },
-        label: {
-            type: String
-        },
-        width: {
-            type: String
-        },
-        treeKey: {
-            type: String,
-            default: 'id'
-        },
-        childNumKey: {
-            type: String,
-            default: 'child_num'
-        },
-        parentKey: {
-            type: String,
-            default: 'parent_id'
-        },
-        levelKey: {
-            type: String,
-            default: 'depth'
-        },
-        childKey: {
-            type: String,
-            default: 'children'
-        },
-        fileIcon: {
-            type: String,
-            default: 'el-icon-file'
-        },
-        folderIcon: {
-            type: String,
-            default: 'el-icon-folder'
-        },
-        remote: {
-            type: Function,
-            default: null
-        },
-        expandAll: {
-            type: Boolean,
-            default: false
-        }
-    },
+        label: String,
+        className: String,
+        labelClassName: String,
+        property: String
+    }, _defineProperty(_props, 'prop', String), _defineProperty(_props, 'width', {}), _defineProperty(_props, 'minWidth', {}), _defineProperty(_props, 'renderHeader', Function), _defineProperty(_props, 'sortable', {
+        type: [String, Boolean],
+        default: false
+    }), _defineProperty(_props, 'sortMethod', Function), _defineProperty(_props, 'resizable', {
+        type: Boolean,
+        default: true
+    }), _defineProperty(_props, 'context', {}), _defineProperty(_props, 'columnKey', String), _defineProperty(_props, 'align', String), _defineProperty(_props, 'headerAlign', String), _defineProperty(_props, 'showTooltipWhenOverflow', Boolean), _defineProperty(_props, 'showOverflowTooltip', Boolean), _defineProperty(_props, 'fixed', [Boolean, String]), _defineProperty(_props, 'formatter', Function), _defineProperty(_props, 'selectable', Function), _defineProperty(_props, 'reserveSelection', Boolean), _defineProperty(_props, 'filterMethod', Function), _defineProperty(_props, 'filteredValue', Array), _defineProperty(_props, 'filters', Array), _defineProperty(_props, 'filterMultiple', {
+        type: Boolean,
+        default: true
+    }), _defineProperty(_props, 'treeKey', {
+        type: String,
+        default: 'id'
+    }), _defineProperty(_props, 'childNumKey', {
+        type: String,
+        default: 'child_num'
+    }), _defineProperty(_props, 'parentKey', {
+        type: String,
+        default: 'parent_id'
+    }), _defineProperty(_props, 'levelKey', {
+        type: String,
+        default: 'depth'
+    }), _defineProperty(_props, 'childKey', {
+        type: String,
+        default: 'children'
+    }), _defineProperty(_props, 'fileIcon', {
+        type: String,
+        default: 'el-icon-file'
+    }), _defineProperty(_props, 'folderIcon', {
+        type: String,
+        default: 'el-icon-folder'
+    }), _defineProperty(_props, 'remote', {
+        type: Function,
+        default: null
+    }), _defineProperty(_props, 'expandAll', {
+        type: Boolean,
+        default: false
+    }), _props),
     render: function render(createElement, context) {
         var h = createElement;
         var floder = function floder(scope) {
@@ -220,7 +246,29 @@ var ElTableTreeItem$1 = {
             attrs: {
                 'prop': context.props.prop,
                 'label': context.props.label,
-                'width': context.props.width
+                'width': context.props.width,
+                'class-name': context.props.className,
+                'label-class-name': context.props.labelClassName,
+                'property': context.props.property,
+                'min-width': context.props.minWidth,
+                'render-header': context.props.renderHeader,
+                'sortable': context.props.sortable,
+                'sort-method': context.props.sortMethod,
+                'resizable': context.props.resizable,
+                'context': context.props.context,
+                'column-key': context.props.columnKey,
+                'align': context.props.align,
+                'header-align': context.props.headerAlign,
+                'show-tooltip-when-overflow': context.props.showTooltipWhenOverflow,
+                'show-overflow-tooltip': context.props.showOverflowTooltip,
+                'fixed': context.props.fixed,
+                'formatter': context.props.formatter,
+                'selectable': context.props.selectable,
+                'reserve-selection': context.props.reserveSelection,
+                'filter-method': context.props.filterMethod,
+                'filtered-value': context.props.filteredValue,
+                'filters': context.props.filters,
+                'filter-multiple': context.props.filterMultiple
             },
             scopedSlots: {
                 default: function _default(scope) {

@@ -1,12 +1,9 @@
 import util from './util'
-
 const methods = {
     floderIcon(context, row) {
         var expanded = false;
-        if(row.$extra){
+        if (row.$extra) {
             expanded = row.$extra.expanded;
-        }else{
-            expanded = context.props.expandAll;
         }
         var floder = context.props.folderIcon,
             floder_open = context.props.folderIcon + '-open';
@@ -28,8 +25,40 @@ const methods = {
         if (row.$extra && row.$extra.loading == true) return 'el-icon-loading';
         return row.$extra && row.$extra.expanded ? 'el-icon-caret-bottom' : 'el-icon-caret-right';
     },
-    doexpanded(instance,context, index, row) {
-        let owner = instance.store.table;//methods.owner(context.parent);
+    has(context, item, list) {
+        let key = context.props.treeKey,
+            parentKey = context.props.parentKey;
+        let uniqueKey = item[key];
+        let has = false;
+        list.forEach(row => {
+            if (row[key] == uniqueKey || row[key] == item[parentKey]) {
+                has = true;
+            }
+        });
+        return has;
+    },
+    commit(context, instance, list) {
+        let owner = instance.store.table; //methods.owner(context.parent);
+        let states = instance.store.states;
+
+        let selection = states.selection;
+        owner.store.commit('setData', list);
+
+        owner.clearSelection();
+        let data = owner.store.states._data;
+        data.forEach(row => {
+            if (methods.has(context, row, selection)) {
+                owner.toggleRowSelection(row)
+            }
+        });
+        // states.selection = currentSelecttion;
+        // if(selection != undefined){
+        //     states.selection = selection;
+        // }
+    },
+    doexpanded(instance, context, index, row) {
+        let owner = instance.store.table; //methods.owner(context.parent);
+        let states = instance.store.states;
         var vm = context.props;
         var data = JSON.parse(JSON.stringify(owner.store.states._data))
         if (data[index].$extra == undefined) {
@@ -43,7 +72,7 @@ const methods = {
                 data[index].$extra.expanded = false;
                 data[index].$extra.hash = hash;
                 data[index].$extra.loading = true;
-                owner.store.commit('setData', data);
+                methods.commit(context, instance, data);
                 vm.remote(row, function(result) {
                     let list = owner.store.states._data;
                     let _index = util.index(hash, list);
@@ -62,7 +91,7 @@ const methods = {
                     } else {
                         list[_index][vm.childNumKey] = 0;
                     }
-                    owner.store.commit('setData', list);
+                    methods.commit(context, instance, list);
                 })
             } else {
                 var prefix = data.slice(0, index + 1);
@@ -72,7 +101,8 @@ const methods = {
                     i++;
                 }
                 data = prefix.concat(row[vm.childKey]).concat(data);
-                owner.store.commit('setData', data);
+                // owner.store.commit('setData', data);
+                methods.commit(context, instance, data);
             }
         } else {
             var id = row[vm.treeKey],
@@ -84,7 +114,8 @@ const methods = {
                 }
             });
             data = result;
-            owner.store.commit('setData', data);
+            methods.commit(context, instance, data);
+            // owner.store.commit('setData', data);
         }
     }
 }
@@ -95,11 +126,39 @@ export default {
         prop: {
             type: String
         },
-        label: {
-            type: String
+        label: String,
+        className: String,
+        labelClassName: String,
+        property: String,
+        prop: String,
+        width: {},
+        minWidth: {},
+        renderHeader: Function,
+        sortable: {
+            type: [String, Boolean],
+            default: false
         },
-        width: {
-            type: String
+        sortMethod: Function,
+        resizable: {
+            type: Boolean,
+            default: true
+        },
+        context: {},
+        columnKey: String,
+        align: String,
+        headerAlign: String,
+        showTooltipWhenOverflow: Boolean,
+        showOverflowTooltip: Boolean,
+        fixed: [Boolean, String],
+        formatter: Function,
+        selectable: Function,
+        reserveSelection: Boolean,
+        filterMethod: Function,
+        filteredValue: Array,
+        filters: Array,
+        filterMultiple: {
+            type: Boolean,
+            default: true
         },
         treeKey: {
             type: String,
@@ -133,9 +192,9 @@ export default {
             type: Function,
             default: null
         },
-        expandAll:{
-            type:Boolean,
-            default:false
+        expandAll: {
+            type: Boolean,
+            default: false
         }
     },
     render(createElement, context) {
@@ -145,7 +204,7 @@ export default {
                 on: {
                     click: function($event) {
                         $event.preventDefault();
-                        methods.doexpanded(scope,context, scope.$index, scope.row);
+                        methods.doexpanded(scope, context, scope.$index, scope.row);
                     }
                 }
             }, [
@@ -178,10 +237,32 @@ export default {
                 'prop': context.props.prop,
                 'label': context.props.label,
                 'width': context.props.width,
+                'class-name': context.props.className,
+                'label-class-name': context.props.labelClassName,
+                'property': context.props.property,
+                'min-width': context.props.minWidth,
+                'render-header': context.props.renderHeader,
+                'sortable': context.props.sortable,
+                'sort-method': context.props.sortMethod,
+                'resizable': context.props.resizable,
+                'context': context.props.context,
+                'column-key': context.props.columnKey,
+                'align': context.props.align,
+                'header-align': context.props.headerAlign,
+                'show-tooltip-when-overflow': context.props.showTooltipWhenOverflow,
+                'show-overflow-tooltip': context.props.showOverflowTooltip,
+                'fixed': context.props.fixed,
+                'formatter': context.props.formatter,
+                'selectable': context.props.selectable,
+                'reserve-selection': context.props.reserveSelection,
+                'filter-method': context.props.filterMethod,
+                'filtered-value': context.props.filteredValue,
+                'filters': context.props.filters,
+                'filter-multiple': context.props.filterMultiple
             },
             scopedSlots: {
                 default: function(scope) {
-                    return  methods.hasChild(context,scope.row) ?[floder(scope)]:[leaf(scope)]
+                    return methods.hasChild(context, scope.row) ? [floder(scope)] : [leaf(scope)]
                 }
             }
         })

@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-default/index.css">
     <link rel="stylesheet" type="text/css" href="http:////at.alicdn.com/t/font_a9e0jr8sy2hme7b9.css">
     <!-- 引入组件库 -->
-    <script src="https://unpkg.com/vue@2.1.6/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script type="text/javascript" src="../dist/tree-table.js"></script>
     <script type="text/javascript" src="./data.js"></script>
@@ -15,14 +15,26 @@
 <body>
     <div id="app" style="padding: 30px;">
         <el-table :data="model.menus" border max-height="400">
-            <el-table-column prop="id" label="id" width="180"></el-table-column>
+            <el-table-column 
+                prop="id" 
+                label="id" 
+                type="selection"
+                fixed></el-table-column >
             <el-table-tree-column  
+                fixed
                 :expand-all="!!1"
                 :remote="remote"
                 file-icon="icon icon-file" 
                 folder-icon="icon icon-folder" 
                 prop="label" label="MenuName" width="320"></el-table-tree-column>
-            <el-table-column prop="description" label="Description" :show-overflow-tooltip="true" width="180"></el-table-column>
+
+
+            <el-table-column 
+                prop="description" 
+                label="Description" 
+                :show-overflow-tooltip="true" 
+                width="180"
+                ></el-table-column >
         </el-table>
     </div>
     <script type="text/javascript">
