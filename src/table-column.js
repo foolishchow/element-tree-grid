@@ -117,6 +117,16 @@ const methods = {
             methods.commit(context, instance, data);
             // owner.store.commit('setData', data);
         }
+    },
+    evalDetails(context,scope,h){
+        let detail ;
+        if( context.data.scopedSlots ){
+            detail = context.data.scopedSlots.default(scope)
+        }else{
+            let text = context.props.formatter ? context.props.formatter(scope.row,scope.column): scope.row[context.props.prop];
+            detail = h('span', {}, text);
+        }
+        return detail;
     }
 }
 export default {
@@ -198,6 +208,7 @@ export default {
         }
     },
     render(createElement, context) {
+        console.info(context);
         let h = createElement;
         let floder = (scope) => {
             return h('span', {
@@ -216,7 +227,7 @@ export default {
                         staticStyle: { "padding-right": "7px" }
                     })
                 ]),
-                h('span', {}, scope.row[context.props.prop])
+                methods.evalDetails(context,scope,h)
             ]);
         };
         let leaf = (scope) => {
@@ -229,7 +240,7 @@ export default {
                         staticStyle: { "padding-right": "7px", "padding-left": "18px" }
                     })
                 ]),
-                h('span', {}, scope.row[context.props.prop])
+                methods.evalDetails(context,scope,h)
             ])
         };
         return h('el-table-column', {

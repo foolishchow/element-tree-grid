@@ -6,16 +6,25 @@
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-default/index.css">
     <link rel="stylesheet" type="text/css" href="http:////at.alicdn.com/t/font_a9e0jr8sy2hme7b9.css">
     <!-- 引入组件库 -->
-    <script src="https://unpkg.com/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/vue@2.1.6/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui@1.2.7/lib/index.js"></script>
     <script type="text/javascript" src="../dist/tree-table.js"></script>
     <script type="text/javascript" src="./data.js"></script>
+    <style type="text/css">
+        body>div>p{
+            background-color: #f5f5f5;
+            border-left:4px solid #ccc;
+            line-height: 40px;
+            padding-left: 10px;
+        }
+    </style>
 </head>
 
 <body>
     <div id="app" style="padding: 30px;">
+        <p>formatter column with formatter</p>
         <el-table :data="model.menus" border max-height="400">
-            <el-table-column 
+            <el-table-column
                 prop="id" 
                 label="id" 
                 type="selection"
@@ -26,9 +35,11 @@
                 :remote="remote"
                 file-icon="icon icon-file" 
                 folder-icon="icon icon-folder" 
-                prop="label" label="MenuName" width="320"></el-table-tree-column>
-
-
+                prop="label" 
+                label="title" 
+                width="320"
+                :formatter="formatter">
+            </el-table-tree-column>
             <el-table-column 
                 prop="description" 
                 label="Description" 
@@ -36,9 +47,43 @@
                 width="180"
                 ></el-table-column >
         </el-table>
+
+    </div>
+
+    <div id="app1" style="padding: 30px;">
+        <p>formatter column with scopedSlot</p>
+        <el-table :data="model.menus" border max-height="400">
+            <el-table-column
+                prop="id" 
+                label="id" 
+                type="selection"
+                fixed></el-table-column >
+            <el-table-tree-column  
+                fixed
+                :expand-all="!!1"
+                :remote="remote"
+                file-icon="icon icon-file" 
+                folder-icon="icon icon-folder" 
+                prop="label" 
+                label="title" 
+                :show-overflow-tooltip="true" 
+                width="320">
+                <template scope="scope">
+                    <span>prefix =></span>
+                    <span>{{scope.row.label}} -- {{scope.row.id}}</span> 
+                    <span><= suffix</span>   
+                </template>
+            </el-table-tree-column>
+            <el-table-column 
+                prop="description" 
+                label="Description" 
+                width="180"
+                ></el-table-column >
+        </el-table>
+
     </div>
     <script type="text/javascript">
-    new Vue({
+    window.app = new Vue({
         el: "#app",
         data: {
             model: {
@@ -50,6 +95,27 @@
                 setTimeout(function() {
                     callback(row.children)
                 },500)
+            },
+            formatter(row,column){
+                return ' ---  '+ row.label;
+            }
+        }
+    })
+     window.app1 = new Vue({
+        el: "#app1",
+        data: {
+            model: {
+                menus: trees
+            }
+        },
+        methods:{
+            remote(row,callback){
+                setTimeout(function() {
+                    callback(row.children)
+                },500)
+            },
+            formatter(row,column){
+                return ' ---  '+ row.label;
             }
         }
     })

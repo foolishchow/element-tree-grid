@@ -169,6 +169,16 @@ var methods = {
             methods.commit(context, instance, data);
             // owner.store.commit('setData', data);
         }
+    },
+    evalDetails: function evalDetails(context, scope, h) {
+        var detail = void 0;
+        if (context.data.scopedSlots) {
+            detail = context.data.scopedSlots.default(scope);
+        } else {
+            var text = context.props.formatter ? context.props.formatter(scope.row, scope.column) : scope.row[context.props.prop];
+            detail = h('span', {}, text);
+        }
+        return detail;
     }
 };
 var ElTableTreeItem$1 = {
@@ -220,6 +230,7 @@ var ElTableTreeItem$1 = {
         default: false
     }), _props),
     render: function render(createElement, context) {
+        console.info(context);
         var h = createElement;
         var floder = function floder(scope) {
             return h('span', {
@@ -232,7 +243,7 @@ var ElTableTreeItem$1 = {
             }, [h('span', { style: { paddingLeft: methods.paddingLeft(context, scope.row) } }, [h('i', { class: methods.icon(scope.row) }), scope._self._v(" "), h('i', {
                 class: methods.floderIcon(context, scope.row),
                 staticStyle: { "padding-right": "7px" }
-            })]), h('span', {}, scope.row[context.props.prop])]);
+            })]), methods.evalDetails(context, scope, h)]);
         };
         var leaf = function leaf(scope) {
             return h('span', [h('span', {
@@ -240,7 +251,7 @@ var ElTableTreeItem$1 = {
             }, [h('i', {
                 class: context.props.fileIcon,
                 staticStyle: { "padding-right": "7px", "padding-left": "18px" }
-            })]), h('span', {}, scope.row[context.props.prop])]);
+            })]), methods.evalDetails(context, scope, h)]);
         };
         return h('el-table-column', {
             attrs: {
