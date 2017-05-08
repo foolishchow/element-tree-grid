@@ -1,6 +1,16 @@
 # element-tree-grid
-
+<p>
+    <a href="https://www.npmjs.com/package/element-tree-grid">
+        <img src="https://img.shields.io/npm/v/element-tree-grid.svg" alt="Version">
+    </a> 
+    <a href="https://www.npmjs.com/package/element-tree-grid">
+        <img src="https://img.shields.io/npm/dm/element-tree-grid.svg" alt="Downloads">
+    </a>
+</p>
 tree grid extends `element` ui  with `vue`
+
+
+
 
 > start
 
