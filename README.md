@@ -81,6 +81,10 @@ tree grid extends `element` ui  with `vue`
     | prop          | same as `el-table-item`  |                 |
     | label         | same as `el-table-item`  |                 |
     | width         | same as `el-table-item`  |                 |
+    | fixed         | same as `el-table-item`  |                 |
+    | resizable     | same as `el-table-item`  |                 |
+    | formatter     | same as `el-table-item`  |                 |
+    | className     | same as `el-table-item`  |                 |
     | treeKey       | the key for neasted parse|  type:`String`,<br> default:`'id'` |
     | childNumKey   | the key of childNum      |  type:`String`,<br> default:`'child_num'` |
     | parentKey     | the key of parent_id        |  type:`String`, <br>default:`'parent_id'`|
@@ -90,4 +94,42 @@ tree grid extends `element` ui  with `vue`
     | folderIcon      | folder icon className ,when opend use: `folderIcon-open`  |  type:`String`,<br> default:`'el-icon-folder'`|
     | remote       | remote method to get children | type:`Function`,<br/>default:`null`|
 
+> examples 
+
+- common 
+```html
+<el-table-tree-column 
+            file-icon="icon icon-file" 
+            folder-icon="icon icon-folder" 
+            prop="label" 
+            label="labelname" 
+            width="220"></el-table-tree-column>
+```
+
+- with formatter
+```html
+<el-table-tree-column 
+            file-icon="icon icon-file" 
+            folder-icon="icon icon-folder" 
+            prop="label" 
+            label="labelname" 
+            :formatter="formatter"
+            width="220"></el-table-tree-column>
+```
+
+- with scopedSolts
+```html
+<el-table-tree-column 
+            file-icon="icon icon-file" 
+            folder-icon="icon icon-folder" 
+            prop="label" 
+            label="labelname" 
+            width="220">
+    <template scope="scope">
+        <span>prefix =></span>
+        <span>{{scope.row.label}} -- {{scope.row.id}}</span> 
+        <span><= suffix</span>   
+    </template>
+</el-table-tree-column>
+```
 
