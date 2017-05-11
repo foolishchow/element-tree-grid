@@ -32,7 +32,7 @@ tree grid extends `element` ui  with `vue`
     var ElTreeGrid = require('element-tree-grid');
     Vue.component(ElTreeGrid.name,ElTreeGrid);
     //import from source code . so you can build them with your webpack or rollup ..
-    import ElTableTreeColumn from  'element-tree-grid/src/index.vue';
+    import ElTableTreeColumn from  'element-tree-grid/src/index.js';
     Vue.component(ElTreeGrid.name,ElTreeGrid)
     ```
 
