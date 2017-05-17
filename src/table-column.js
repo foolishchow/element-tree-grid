@@ -61,6 +61,7 @@ const methods = {
         let states = instance.store.states;
         var vm = context.props;
         var data = JSON.parse(JSON.stringify(owner.store.states._data))
+        if(data[index].$extra != undefined && data[index].$extra.loading) return;
         if (data[index].$extra == undefined) {
             data[index].$extra = { expanded: true }
         } else {
@@ -208,7 +209,6 @@ export default {
         }
     },
     render(createElement, context) {
-        console.info(context);
         let h = createElement;
         let floder = (scope) => {
             return h('span', {

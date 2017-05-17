@@ -113,6 +113,7 @@ var methods = {
         var states = instance.store.states;
         var vm = context.props;
         var data = JSON.parse(JSON.stringify(owner.store.states._data));
+        if (data[index].$extra != undefined && data[index].$extra.loading) return;
         if (data[index].$extra == undefined) {
             data[index].$extra = { expanded: true };
         } else {
@@ -230,7 +231,6 @@ var ElTableTreeItem$1 = {
         default: false
     }), _props),
     render: function render(createElement, context) {
-        console.info(context);
         var h = createElement;
         var floder = function floder(scope) {
             return h('span', {
