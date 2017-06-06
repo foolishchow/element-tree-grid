@@ -108,7 +108,14 @@ var methods = {
         //     states.selection = selection;
         // }
     },
+    setSystemExpanded: function setSystemExpanded(list) {
+        list.forEach(function (item) {
+            item.$extra = { expanded: true };
+        });
+    },
     doexpanded: function doexpanded(instance, context, index, row) {
+        var isRender = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+
         var owner = instance.store.table; //methods.owner(context.parent);
         var states = instance.store.states;
         var vm = context.props;
@@ -140,6 +147,7 @@ var methods = {
                             list.shift();
                             i++;
                         }
+                        // if(isRender) methods.setSystemExpanded(result)
                         list = prefix.concat(result).concat(list);
                     } else {
                         list[_index][vm.childNumKey] = 0;
@@ -153,6 +161,7 @@ var methods = {
                     data.shift();
                     i++;
                 }
+                // if(isRender) methods.setSystemExpanded(row[vm.childKey])
                 data = prefix.concat(row[vm.childKey]).concat(data);
                 // owner.store.commit('setData', data);
                 methods.commit(context, instance, data);
@@ -233,6 +242,11 @@ var ElTableTreeItem$1 = {
     render: function render(createElement, context) {
         var h = createElement;
         var floder = function floder(scope) {
+            if (scope && scope.store.table.store.states._data[scope.$index].$extra == undefined) {
+                if (context.props.expandAll) {
+                    methods.doexpanded(scope, context, scope.$index, scope.row, true);
+                }
+            }
             return h('span', {
                 on: {
                     click: function click($event) {

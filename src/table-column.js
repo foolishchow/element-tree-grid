@@ -56,7 +56,12 @@ const methods = {
         //     states.selection = selection;
         // }
     },
-    doexpanded(instance, context, index, row) {
+    setSystemExpanded(list){
+        list.forEach(item=>{
+            item.$extra = { expanded:true }
+        })
+    },
+    doexpanded(instance, context, index, row,isRender=false) {
         let owner = instance.store.table; //methods.owner(context.parent);
         let states = instance.store.states;
         var vm = context.props;
@@ -88,6 +93,7 @@ const methods = {
                             list.shift();
                             i++;
                         }
+                        // if(isRender) methods.setSystemExpanded(result)
                         list = prefix.concat(result).concat(list);
                     } else {
                         list[_index][vm.childNumKey] = 0;
@@ -101,6 +107,7 @@ const methods = {
                     data.shift();
                     i++;
                 }
+                // if(isRender) methods.setSystemExpanded(row[vm.childKey])
                 data = prefix.concat(row[vm.childKey]).concat(data);
                 // owner.store.commit('setData', data);
                 methods.commit(context, instance, data);
@@ -211,6 +218,11 @@ export default {
     render(createElement, context) {
         let h = createElement;
         let floder = (scope) => {
+            if(scope && scope.store.table.store.states._data[scope.$index].$extra == undefined){
+                if( context.props.expandAll){
+                    methods.doexpanded(scope, context, scope.$index, scope.row,true);
+                } 
+            } 
             return h('span', {
                 on: {
                     click: function($event) {
