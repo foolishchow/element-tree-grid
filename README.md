@@ -101,6 +101,7 @@ tree grid extends `element` ui  with `vue`
     | fileIcon      | file icon className  |  type:`String`, <br>default:`'el-icon-file'`|
     | folderIcon      | folder icon className ,when opend use: `folderIcon-open`  |  type:`String`,<br> default:`'el-icon-folder'`|
     | remote       | remote method to get children | type:`Function`,<br/>default:`null`|
+    | expandAll       | expand all nodes when loaded | type:`Boolean`,<br/>default:`false`|
 
 > examples 
 
