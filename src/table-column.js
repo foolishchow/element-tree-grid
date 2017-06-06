@@ -56,9 +56,9 @@ const methods = {
         //     states.selection = selection;
         // }
     },
-    setSystemExpanded(list){
+    setSystemExpanded(list,isRender){
         list.forEach(item=>{
-            item.$extra = { expanded:true }
+            item.$extra = { isRender:isRender }
         })
     },
     doexpanded(instance, context, index, row,isRender=false) {
@@ -93,7 +93,7 @@ const methods = {
                             list.shift();
                             i++;
                         }
-                        // if(isRender) methods.setSystemExpanded(result)
+                        methods.setSystemExpanded(result,isRender)
                         list = prefix.concat(result).concat(list);
                     } else {
                         list[_index][vm.childNumKey] = 0;
@@ -107,8 +107,9 @@ const methods = {
                     data.shift();
                     i++;
                 }
-                // if(isRender) methods.setSystemExpanded(row[vm.childKey])
-                data = prefix.concat(row[vm.childKey]).concat(data);
+                var result = row[vm.childKey];
+                methods.setSystemExpanded(row[vm.childKey],isRender)
+                data = prefix.concat(result).concat(data);
                 // owner.store.commit('setData', data);
                 methods.commit(context, instance, data);
             }
@@ -218,7 +219,8 @@ export default {
     render(createElement, context) {
         let h = createElement;
         let floder = (scope) => {
-            if(scope && scope.store.table.store.states._data[scope.$index].$extra == undefined){
+            var row = scope.store.table.store.states._data[scope.$index]
+            if(row.$extra == undefined || row.$extra.isRender ){
                 if( context.props.expandAll){
                     methods.doexpanded(scope, context, scope.$index, scope.row,true);
                 } 

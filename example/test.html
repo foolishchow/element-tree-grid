@@ -69,9 +69,9 @@
                 label="title" 
                 :show-overflow-tooltip="true" 
                 width="320">
-                <template scope="scope">
+                <template scope="scope" >
                     <span>prefix =></span>
-                    <span>{{scope.row.label}} -- {{scope.row.id}}</span> 
+                    <span @click="text(scope)">{{scope.row.label}} -- {{scope.row.id}}</span> 
                     <span><= suffix</span>   
                 </template>
             </el-table-tree-column>
@@ -114,6 +114,9 @@
                 setTimeout(function() {
                     callback(row.children)
                 },500)
+            },
+            text(scope){
+                console.info(scope)
             }
         }
     })
