@@ -239,16 +239,22 @@ var ElTableTreeItem$1 = {
     }), _defineProperty(_props, 'expandAll', {
         type: Boolean,
         default: false
+    }), _defineProperty(_props, 'expandKey', {
+        type: String,
+        default: 'expanded'
     }), _props),
     render: function render(createElement, context) {
         var h = createElement;
         var floder = function floder(scope) {
             var row = scope.store.table.store.states._data[scope.$index];
-            if (row.$extra == undefined || row.$extra.isRender) {
+            if (row && row[context.props.expandKey] && (row.$extra == undefined || row.$extra.expanded == undefined)) {
+                methods.doexpanded(scope, context, scope.$index, scope.row, false);
+            } else if (row && (row.$extra == undefined || row.$extra.isRender)) {
                 if (context.props.expandAll) {
                     methods.doexpanded(scope, context, scope.$index, scope.row, true);
                 }
             }
+
             return h('span', {
                 on: {
                     click: function click($event) {

@@ -15,6 +15,7 @@ var trees = [{
          "depth": 1,
          "child_num": 5,
          "description": "Base Manager",
+         "expanded":true,
          "children": [{
              "id": 3,
              "label": "Menus",
@@ -83,6 +84,7 @@ var trees = [{
      "depth": 0,
      "child_num": 2,
      "description": "Bussiness Manager",
+     "expanded":true,
      "children": [{
          "id": 11,
          "label": "BussinessList",

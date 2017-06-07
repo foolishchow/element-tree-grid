@@ -214,17 +214,24 @@ export default {
         expandAll: {
             type: Boolean,
             default: false
+        },
+        expandKey:{
+            type:String,
+            default:'expanded'
         }
     },
     render(createElement, context) {
         let h = createElement;
         let floder = (scope) => {
-            var row = scope.store.table.store.states._data[scope.$index]
-            if(row.$extra == undefined || row.$extra.isRender ){
+            var row = scope.store.table.store.states._data[scope.$index];
+            if(row && row[context.props.expandKey] && (row.$extra == undefined || row.$extra.expanded == undefined ) ){
+                methods.doexpanded(scope, context, scope.$index, scope.row,false);
+            }else if(row && (row.$extra == undefined || row.$extra.isRender) ){
                 if( context.props.expandAll){
                     methods.doexpanded(scope, context, scope.$index, scope.row,true);
                 } 
-            } 
+            }
+
             return h('span', {
                 on: {
                     click: function($event) {
