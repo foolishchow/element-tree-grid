@@ -1,2 +1,5 @@
 node_modules
 
+types/*.jsx
+types/*.js
+src1

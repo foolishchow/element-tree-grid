@@ -1,0 +1,36 @@
+{
+  "include": [
+    "*.d.ts",
+    "./src/**/*",
+  ],
+  "exclude": [
+    "node_modules",
+    ".webpack"
+  ],
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxFactory": "h",
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "allowJs": false,
+    "module": "esnext",
+    "target": "es5",
+    "moduleResolution": "node",
+    "isolatedModules": false,
+    "strict": true, /* Enable all strict type-checking options. */
+    "noImplicitAny": true,
+    "strictPropertyInitialization": false,
+    "lib": [
+      "dom",
+      "es5",
+      "es6",
+      "es7",
+      "es2015.promise"
+    ],
+    "sourceMap": false,
+    "pretty": true,
+    "baseUrl": "./",
+    "outDir": "./types",
+    "declaration": true
+  }
+}
