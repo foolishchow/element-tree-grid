@@ -10,6 +10,8 @@
 
 tree grid extends `element` ui  with `vue`
 
+> [demos](http://htmlpreview.github.io/?https://github.com/foolishchow/element-tree-grid/blob/master/example/test.html) 
+
 > start
 
 - clone to your project

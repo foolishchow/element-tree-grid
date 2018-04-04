@@ -1,4 +1,4 @@
-var flatTree = [{
+window.flatTree = [{
     "id": 1,
     "label": "System",
     "parent_id": null,

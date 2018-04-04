@@ -5,6 +5,8 @@
     <title>tree-grid</title>
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <link rel="stylesheet" type="text/css" href="http:////at.alicdn.com/t/font_a9e0jr8sy2hme7b9.css">
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/default.min.css">
+    <script src="http://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js"></script>
     <!-- 引入组件库 -->
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
@@ -21,6 +23,15 @@
 </head>
 
 <body>
+    <pre id="demo1" style="display:none;">
+    <el-table :data="model.menus" border max-height="400">
+        <el-table-column prop="id" label="id" type="selection" fixed></el-table-column>
+        <el-table-tree-column fixed :expand-all="!1" :remote="remote" file-icon="icon icon-file" folder-icon="icon icon-folder" prop="label"
+            label="title" width="320" class-name="123" header-align="center" :formatter="formatter">
+        </el-table-tree-column>
+        <el-table-column prop="description" label="Description" :show-overflow-tooltip="true" width="180"></el-table-column>
+    </el-table>
+    </pre>
     <div id="app" style="padding: 30px;">
         <p>formatter column with formatter</p>
         <el-table :data="model.menus" border max-height="400">
@@ -30,8 +41,72 @@
             </el-table-tree-column>
             <el-table-column prop="description" label="Description" :show-overflow-tooltip="true" width="180"></el-table-column>
         </el-table>
+
+        <p></p>
+        <pre v-text='html' lang="html"></pre>
+        <pre lang="js">
+    window.app = new Vue({
+        el: "#app",
+        data: {
+            model: {
+                menus: flatTree.filter(f => f['parent_id'] == null)
+            }
+        },
+        methods: {
+            remote(row, callback) {
+                callback(flatTree.filter(f => f['parent_id'] == row['id']))
+            },
+            formatter(row, column) {
+                return ' ---  ' + row.label;
+            }
+        }
+    })
+            </pre>
     </div>
 
+    <script type="text/javascript">
+        new Vue({
+            el: "#app",
+            created() {
+                this.html = document.querySelector('#demo1').innerHTML;
+            },
+            data: {
+                html: '',
+                model: {
+                    menus: flatTree.filter(f => f['parent_id'] == null)
+                }
+            },
+            mounted() {
+                let blocks = this.$el.querySelectorAll('pre');
+                blocks.forEach((block) => {
+                    hljs.highlightBlock(block)
+                })
+            },
+            methods: {
+                remote(row, callback) {
+                    callback(flatTree.filter(f => f['parent_id'] == row['id']))
+                },
+                formatter(row, column) {
+                    return ' ---  ' + row.label;
+                }
+            }
+        })
+    </script>
+    <pre id="demo2" style="display:none;">
+    <el-table :data="model.menus" border max-height="400">
+        <el-table-column prop="id" label="id" type="selection" fixed></el-table-column>
+        <el-table-tree-column fixed :expand-all="!!!1" :remote="remote" file-icon="icon icon-file" folder-icon="icon icon-folder"
+            prop="label" label="title" :show-overflow-tooltip="true" width="320">
+            <template slot-scope="scope">
+                <span>prefix =></span>
+                <span @click="text(scope)">{{scope.row.label}} -- {{scope.row.id}}</span>
+                <span>
+                    <=suffix</span>
+            </template>
+        </el-table-tree-column>
+        <el-table-column prop="description" label="Description" width="180"></el-table-column>
+    </el-table>
+    </pre>
     <div id="app1" style="padding: 30px;">
         <p>formatter column with scopedSlot</p>
         <el-table :data="model.menus" border max-height="400">
@@ -47,38 +122,46 @@
             </el-table-tree-column>
             <el-table-column prop="description" label="Description" width="180"></el-table-column>
         </el-table>
-
-    </div>
-    <script type="text/javascript">
-        function noChild(arr) {
-            return JSON.parse(JSON.stringify(arr)).map(a => {
-                a.children == undefined;
-                return a;
-            })
-        }
-        console.info(noChild(trees))
-        window.app = new Vue({
-            el: "#app",
-            data: {
-                model: {
-                    menus: flatTree.filter(f => f['parent_id'] == null)
-                }
-            },
-            methods: {
-                remote(row, callback) {
-                    callback(flatTree.filter(f => f['parent_id'] == row['id']))
-                },
-                formatter(row, column) {
-                    return ' ---  ' + row.label;
-                }
+        <pre v-text='html' lang="html"></pre>
+        <pre lang="js">
+    new Vue({
+        el: "#app1",
+        data: {
+            model: {
+                menus: trees
             }
-        })
-        window.app1 = new Vue({
+        },
+        methods: {
+            remote(row, callback) {
+                setTimeout(function () {
+                    callback(row.children)
+                }, 500)
+            },
+            text(scope) {
+                console.info(scope)
+            }
+        }
+    }) 
+        </pre>
+    </div>
+
+    <script type="text/javascript">
+        new Vue({
             el: "#app1",
+            created() {
+                this.html = document.querySelector('#demo2').innerHTML;
+            },
             data: {
+                html: '',
                 model: {
                     menus: trees
                 }
+            },
+            mounted() {
+                let blocks = this.$el.querySelectorAll('pre');
+                blocks.forEach((block) => {
+                    hljs.highlightBlock(block)
+                })
             },
             methods: {
                 remote(row, callback) {
