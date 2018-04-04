@@ -1,11 +1,6 @@
-import { ElTableStore, ElTableTreeColumnProps } from "./props";
+import { ElTableStore, ElTableTreeColumnProps, ElTableTreeColumnType } from "./props";
 import { TableColumn } from "./dependence";
 export declare type ColumnRow = {
-    $extra?: {
-        expanded?: boolean;
-        loading?: boolean;
-        hash?: string;
-    };
     [key: string]: any;
 };
 export declare type ColumnScope = {
@@ -15,5 +10,5 @@ export declare type ColumnScope = {
     store: ElTableStore<ColumnRow>;
 };
 export declare type ElTableTreeColumnProps = ElTableTreeColumnProps;
-declare const ElTableTreeColumn: any;
+declare const ElTableTreeColumn: ElTableTreeColumnType;
 export default ElTableTreeColumn;
