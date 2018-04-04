@@ -12,7 +12,7 @@ tree grid extends `element` ui  with `vue`
 
 **having problems** with `<el-table-column type="selection" fixed></el-table-column>`    
 
-if you have any idea , **PR is welcome !!!**
+if you have any idea , **welcome !!!**
 
 
 > [demos](http://htmlpreview.github.io/?https://github.com/foolishchow/element-tree-grid/blob/master/example/test.html) 
@@ -143,7 +143,7 @@ if you have any idea , **PR is welcome !!!**
             prop="label" 
             label="labelname" 
             width="220">
-    <template scope="scope">
+    <template slot-scope="scope">
         <span>prefix =></span>
         <span>{{scope.row.label}} -- {{scope.row.id}}</span> 
         <span><= suffix</span>   
