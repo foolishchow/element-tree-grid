@@ -105,6 +105,7 @@ tree grid extends `element` ui  with `vue`
     | allRemote    | request all data from remote ,you have to config prop `remote` first,default use request cache | type:`Boolean`,<br/>default:`false`|
     | expandAll    | expand all nodes when loaded | type:`Boolean`,<br/>default:`false`|
     | expandKey    | key tells if the line is opened at inited ( just expended once )| type:`String`,<br/>default:`expanded`|
+    | indentSize    | indent number ,united in `px`| type:`Number`,<br/>default:`14`|
 
 > examples 
 

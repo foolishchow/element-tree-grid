@@ -29,7 +29,7 @@ const RenderFolder = function (h: CreateElement, context: RenderContext<ElTableT
     }}>
     <span style={{ paddingLeft: util.paddingLeft(context, scope) }}>
       <i class={util.icon(scope, context)} ></i>
-      <i class={util.folderIcon(context, scope)} style={{ "padding-right": "7px" }}></i>
+      <i class={util.folderIcon(context, scope)}></i>
     </span>
     {util.renderDetail(h, context, scope)}
   </span>
@@ -37,7 +37,7 @@ const RenderFolder = function (h: CreateElement, context: RenderContext<ElTableT
 
 const RenderLeaf = function (h: CreateElement, context: RenderContext<ElTableTreeColumnPropsInner>, scope: ColumnScope) {
   return <span style={{ paddingLeft: util.paddingLeft(context, scope) }}>
-    <i class={context.props.fileIcon} style={{ "padding-right": "7px", "padding-left": "18px" }}></i>
+    <i class={context.props.fileIcon} ></i>
     {util.renderDetail(h, context, scope)}
   </span>
 }

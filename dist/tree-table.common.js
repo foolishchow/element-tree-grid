@@ -137,6 +137,7 @@ var ElTableTreeColumnPropDefine = {
         default: 'expanded'
     }
 };
+//# sourceMappingURL=props.js.map
 
 function hasChild(context, scope) {
     var _a = context.props,
@@ -239,6 +240,7 @@ function renderDetail(h, context, scope) {
         [scope.row[context.props.prop]]
     );
 }
+//# sourceMappingURL=utils.jsx.map
 
 var clone = function clone(data) {
     return JSON.parse(JSON.stringify(data));
@@ -405,7 +407,6 @@ function doExpand(context, scope) {
     var _a = context.props,
         remote = _a.remote,
         allRemote = _a.allRemote;
-    console.info(data);
     if (remote && allRemote) {
         return ExpandRemote(context, scope, data);
     }
@@ -416,6 +417,7 @@ function doExpand(context, scope) {
     }
     Expand(context, scope, data);
 }
+//# sourceMappingURL=expand.js.map
 
 var ElTableInject = /** @class */function () {
     function ElTableInject() {
@@ -436,6 +438,7 @@ var ElTableInject = /** @class */function () {
     return ElTableInject;
 }();
 var ElTableInjecter = new ElTableInject();
+//# sourceMappingURL=inject.js.map
 
 var RenderFolder = function RenderFolder(h, context, scope) {
     if (isNeedExpanedRow(context, scope)) {
@@ -462,7 +465,7 @@ var RenderFolder = function RenderFolder(h, context, scope) {
                 []
             ), h(
                 'i',
-                { 'class': folderIcon(context, scope), style: { "padding-right": "7px" } },
+                { 'class': folderIcon(context, scope) },
                 []
             )]
         ), renderDetail(h, context, scope)]
@@ -474,7 +477,7 @@ var RenderLeaf = function RenderLeaf(h, context, scope) {
         { style: { paddingLeft: paddingLeft(context, scope) } },
         [h(
             'i',
-            { 'class': context.props.fileIcon, style: { "padding-right": "7px", "padding-left": "18px" } },
+            { 'class': context.props.fileIcon },
             []
         ), renderDetail(h, context, scope)]
     );

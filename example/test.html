@@ -13,17 +13,116 @@
     <script type="text/javascript" src="../dist/tree-table.js"></script>
     <script type="text/javascript" src="./data.js"></script>
     <style type="text/css">
-        body>div>p {
+        body p {
             background-color: #f5f5f5;
             border-left: 4px solid #ccc;
             line-height: 40px;
             padding-left: 10px;
         }
+
+        .icon-file {
+            padding-right: 7px;
+            padding-left: 18px
+        }
+
+        .icon-folder,
+        .icon-folder-open {
+            padding-left: 7px;
+            padding-right: 7px
+        }
     </style>
 </head>
 
 <body>
-    <textarea id="demo1" style="display:none;">
+    <div>
+        <textarea id="demo2" style="display:none;">
+            <el-table :data="model.menus" border max-height="400">
+                <el-table-column prop="id" label="id" type="selection" fixed></el-table-column>
+                <el-table-tree-column 
+                    fixed :expand-all="!!!1" 
+                    file-icon="icon icon-file"  folder-icon="icon icon-folder"
+                    prop="label" label="title" child-key="children"
+                    :show-overflow-tooltip="true" width="320"
+                    :indent-size="20">
+                    <template slot-scope="scope">
+                        <span>prefix =></span>
+                        <span @click="text(scope)">{{scope.row.label}} -- {{scope.row.id}}</span>
+                        <span>
+                            <=suffix</span>
+                    </template>
+                </el-table-tree-column>
+                <el-table-column prop="description" 
+                    label="Description" width="180"></el-table-column>
+            </el-table>
+        </textarea>
+        <div id="app1" style="padding: 30px;">
+            <p>basic usage</p>
+            <el-table :data="model.menus" border max-height="400">
+                <el-table-column prop="id" label="id" type="selection" fixed></el-table-column>
+                <el-table-tree-column fixed :expand-all="!!!1" child-key="children" file-icon="icon icon-file" folder-icon="icon icon-folder"
+                    prop="label" label="title" :show-overflow-tooltip="true" width="320" :indent-size="20">
+                    <template slot-scope="scope">
+                        <span>prefix =></span>
+                        <span @click="text(scope)">{{scope.row.label}} -- {{scope.row.id}}</span>
+                        <span>
+                            <=suffix</span>
+                    </template>
+                </el-table-tree-column>
+                <el-table-column prop="description" label="Description" width="180"></el-table-column>
+            </el-table>
+            <p @click="showCode=!showCode">click to see code</p>
+            <pre v-text='html' lang="html" v-show="showCode"></pre>
+            <pre lang="js" v-show="showCode">
+                new Vue({
+                    el: "#app1",
+                    data: {
+                        model: {
+                            menus: trees
+                        }
+                    },
+                    methods: {
+                        remote(row, callback) {
+                            setTimeout(function () {
+                                callback(row.children)
+                            }, 500)
+                        },
+                        testClick(scope) {
+                            console.info(scope)
+                        }
+                    }
+                }) 
+                    </pre>
+        </div>
+
+        <script type="text/javascript">
+            new Vue({
+                el: "#app1",
+                created() {
+                    this.html = document.querySelector('#demo2').value;
+                },
+                data: {
+                    showCode: false,
+                    html: '',
+                    model: {
+                        menus: trees
+                    }
+                },
+                mounted() {
+                    let blocks = this.$el.querySelectorAll('pre');
+                    blocks.forEach((block) => {
+                        hljs.highlightBlock(block)
+                    })
+                },
+                methods: {
+                    text(scope) {
+                        console.info(scope)
+                    }
+                }
+            }) 
+        </script>
+    </div>
+    <div>
+        <textarea id="demo1" style="display:none;">
     <el-table :data="model.menus" border max-height="400">
         <el-table-column prop="id" label="id" type="selection" fixed></el-table-column>
         <el-table-tree-column 
@@ -37,20 +136,20 @@
         <el-table-column prop="description" label="Description" 
             :show-overflow-tooltip="true" width="180"></el-table-column>
     </el-table>
-    </textarea>
-    <div id="app" style="padding: 30px;">
-        <p>formatter column with formatter</p>
-        <el-table :data="model.menus" border max-height="400">
-            <el-table-column prop="id" label="id" type="selection" fixed></el-table-column>
-            <el-table-tree-column fixed :expand-all="!1" :remote="remote" file-icon="icon icon-file" folder-icon="icon icon-folder" prop="label"
-                label="title" width="320" class-name="123" header-align="center" :formatter="formatter">
-            </el-table-tree-column>
-            <el-table-column prop="description" label="Description" :show-overflow-tooltip="true" width="180"></el-table-column>
-        </el-table>
+        </textarea>
+        <div id="app" style="padding: 30px;">
+            <p>load data by props remote</p>
+            <el-table :data="model.menus" border max-height="400">
+                <el-table-column prop="id" label="id" type="selection" fixed></el-table-column>
+                <el-table-tree-column fixed :expand-all="!1" :remote="remote" file-icon="icon icon-file" folder-icon="icon icon-folder" prop="label"
+                    label="title" width="320" class-name="123" header-align="center">
+                </el-table-tree-column>
+                <el-table-column prop="description" label="Description" :show-overflow-tooltip="true" width="180"></el-table-column>
+            </el-table>
 
-        <p></p>
-        <pre v-text='html' lang="html"></pre>
-        <pre lang="js">
+            <p @click="showCode=!showCode"> click to see code</p>
+            <pre v-text='html' lang="html" v-show="showCode"></pre>
+            <pre lang="js" v-show="showCode">
     window.app = new Vue({
         el: "#app",
         data: {
@@ -61,131 +160,44 @@
         methods: {
             remote(row, callback) {
                 callback(flatTree.filter(f => f['parent_id'] == row['id']))
-            },
-            formatter(row, column) {
-                return ' ---  ' + row.label;
             }
         }
     })
             </pre>
+        </div>
+
+        <script type="text/javascript">
+            new Vue({
+                el: "#app",
+                created() {
+                    this.html = document.querySelector('#demo1').value;
+                },
+                data: {
+                    showCode: false,
+                    html: '',
+                    model: {
+                        menus: flatTree.filter(f => f['parent_id'] == null)
+                    }
+                },
+                mounted() {
+                    let blocks = this.$el.querySelectorAll('pre');
+                    blocks.forEach((block) => {
+                        hljs.highlightBlock(block)
+                    })
+                },
+                methods: {
+                    remote(row, callback) {
+                        callback(flatTree.filter(f => f['parent_id'] == row['id']))
+                    },
+                    formatter(row, column) {
+                        return ' ---  ' + row.label;
+                    }
+                }
+            })
+        </script>
     </div>
 
-    <script type="text/javascript">
-        new Vue({
-            el: "#app",
-            created() {
-                this.html = document.querySelector('#demo1').value;
-            },
-            data: {
-                html: '',
-                model: {
-                    menus: flatTree.filter(f => f['parent_id'] == null)
-                }
-            },
-            mounted() {
-                let blocks = this.$el.querySelectorAll('pre');
-                blocks.forEach((block) => {
-                    hljs.highlightBlock(block)
-                })
-            },
-            methods: {
-                remote(row, callback) {
-                    callback(flatTree.filter(f => f['parent_id'] == row['id']))
-                },
-                formatter(row, column) {
-                    return ' ---  ' + row.label;
-                }
-            }
-        })
-    </script>
-    <textarea id="demo2" style="display:none;">
-    <el-table :data="model.menus" border max-height="400">
-        <el-table-column prop="id" label="id" type="selection" fixed></el-table-column>
-        <el-table-tree-column 
-            fixed :expand-all="!!!1" 
-            :remote="remote" 
-            file-icon="icon icon-file"  folder-icon="icon icon-folder"
-            prop="label" label="title" 
-            :show-overflow-tooltip="true" width="320">
-            <template slot-scope="scope">
-                <span>prefix =></span>
-                <span @click="text(scope)">{{scope.row.label}} -- {{scope.row.id}}</span>
-                <span>
-                    <=suffix</span>
-            </template>
-        </el-table-tree-column>
-        <el-table-column prop="description" 
-            label="Description" width="180"></el-table-column>
-    </el-table>
-    </textarea>
-    <div id="app1" style="padding: 30px;">
-        <p>formatter column with scopedSlot</p>
-        <el-table :data="model.menus" border max-height="400">
-            <el-table-column prop="id" label="id" type="selection" fixed></el-table-column>
-            <el-table-tree-column fixed :expand-all="!!!1" :remote="remote" file-icon="icon icon-file" folder-icon="icon icon-folder"
-                prop="label" label="title" :show-overflow-tooltip="true" width="320">
-                <template slot-scope="scope">
-                    <span>prefix =></span>
-                    <span @click="text(scope)">{{scope.row.label}} -- {{scope.row.id}}</span>
-                    <span>
-                        <=suffix</span>
-                </template>
-            </el-table-tree-column>
-            <el-table-column prop="description" label="Description" width="180"></el-table-column>
-        </el-table>
-        <pre v-text='html' lang="html"></pre>
-        <pre lang="js">
-    new Vue({
-        el: "#app1",
-        data: {
-            model: {
-                menus: trees
-            }
-        },
-        methods: {
-            remote(row, callback) {
-                setTimeout(function () {
-                    callback(row.children)
-                }, 500)
-            },
-            text(scope) {
-                console.info(scope)
-            }
-        }
-    }) 
-        </pre>
-    </div>
 
-    <script type="text/javascript">
-        new Vue({
-            el: "#app1",
-            created() {
-                this.html = document.querySelector('#demo2').value;
-            },
-            data: {
-                html: '',
-                model: {
-                    menus: trees
-                }
-            },
-            mounted() {
-                let blocks = this.$el.querySelectorAll('pre');
-                blocks.forEach((block) => {
-                    hljs.highlightBlock(block)
-                })
-            },
-            methods: {
-                remote(row, callback) {
-                    setTimeout(function () {
-                        callback(row.children)
-                    }, 500)
-                },
-                text(scope) {
-                    console.info(scope)
-                }
-            }
-        }) 
-    </script>
 </body>
 
 </html>
