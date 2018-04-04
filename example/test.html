@@ -34,7 +34,9 @@
 </head>
 
 <body>
+
     <div>
+
         <textarea id="demo2" style="display:none;">
             <el-table :data="model.menus" border max-height="400">
                 <el-table-column prop="id" label="id" type="selection" fixed></el-table-column>
@@ -56,6 +58,7 @@
             </el-table>
         </textarea>
         <div id="app1" style="padding: 30px;">
+            <p style="padding: 30px;color:red">currently can't use width selection column </p>
             <p>basic usage</p>
             <el-table :data="model.menus" border max-height="400">
                 <el-table-column prop="id" label="id" type="selection" fixed></el-table-column>
