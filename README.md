@@ -8,8 +8,11 @@
     </a>
 </p>
 
-tree grid extends `element` ui  with `vue`    
-**having problems with `<el-table-column type="selection" fixed></el-table-column>`**
+tree grid extends `element` ui  with `vue`   
+
+**having problems** with `<el-table-column type="selection" fixed></el-table-column>`    
+
+if you have any idea , **PR is welcome !!!**
 
 
 > [demos](http://htmlpreview.github.io/?https://github.com/foolishchow/element-tree-grid/blob/master/example/test.html) 
