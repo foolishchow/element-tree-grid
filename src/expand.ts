@@ -174,7 +174,6 @@ export function doExpand(context: RenderContext<ElTableTreeColumnPropsInner>, sc
     return Colspand(context, scope, data);
   }
   let { remote, allRemote } = context.props;
-  console.info(data)
   if (remote && allRemote) {
     return ExpandRemote(context, scope, data)
   }

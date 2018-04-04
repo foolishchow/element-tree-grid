@@ -23,15 +23,21 @@
 </head>
 
 <body>
-    <pre id="demo1" style="display:none;">
+    <textarea id="demo1" style="display:none;">
     <el-table :data="model.menus" border max-height="400">
         <el-table-column prop="id" label="id" type="selection" fixed></el-table-column>
-        <el-table-tree-column fixed :expand-all="!1" :remote="remote" file-icon="icon icon-file" folder-icon="icon icon-folder" prop="label"
-            label="title" width="320" class-name="123" header-align="center" :formatter="formatter">
+        <el-table-tree-column 
+            fixed :expand-all="!1" 
+            :remote="remote" 
+            file-icon="icon icon-file" folder-icon="icon icon-folder" 
+            prop="label" label="title" 
+            width="320" class-name="123" header-align="center" 
+            :formatter="formatter">
         </el-table-tree-column>
-        <el-table-column prop="description" label="Description" :show-overflow-tooltip="true" width="180"></el-table-column>
+        <el-table-column prop="description" label="Description" 
+            :show-overflow-tooltip="true" width="180"></el-table-column>
     </el-table>
-    </pre>
+    </textarea>
     <div id="app" style="padding: 30px;">
         <p>formatter column with formatter</p>
         <el-table :data="model.menus" border max-height="400">
@@ -68,7 +74,7 @@
         new Vue({
             el: "#app",
             created() {
-                this.html = document.querySelector('#demo1').innerHTML;
+                this.html = document.querySelector('#demo1').value;
             },
             data: {
                 html: '',
@@ -92,11 +98,15 @@
             }
         })
     </script>
-    <pre id="demo2" style="display:none;">
+    <textarea id="demo2" style="display:none;">
     <el-table :data="model.menus" border max-height="400">
         <el-table-column prop="id" label="id" type="selection" fixed></el-table-column>
-        <el-table-tree-column fixed :expand-all="!!!1" :remote="remote" file-icon="icon icon-file" folder-icon="icon icon-folder"
-            prop="label" label="title" :show-overflow-tooltip="true" width="320">
+        <el-table-tree-column 
+            fixed :expand-all="!!!1" 
+            :remote="remote" 
+            file-icon="icon icon-file"  folder-icon="icon icon-folder"
+            prop="label" label="title" 
+            :show-overflow-tooltip="true" width="320">
             <template slot-scope="scope">
                 <span>prefix =></span>
                 <span @click="text(scope)">{{scope.row.label}} -- {{scope.row.id}}</span>
@@ -104,9 +114,10 @@
                     <=suffix</span>
             </template>
         </el-table-tree-column>
-        <el-table-column prop="description" label="Description" width="180"></el-table-column>
+        <el-table-column prop="description" 
+            label="Description" width="180"></el-table-column>
     </el-table>
-    </pre>
+    </textarea>
     <div id="app1" style="padding: 30px;">
         <p>formatter column with scopedSlot</p>
         <el-table :data="model.menus" border max-height="400">
@@ -149,7 +160,7 @@
         new Vue({
             el: "#app1",
             created() {
-                this.html = document.querySelector('#demo2').innerHTML;
+                this.html = document.querySelector('#demo2').value;
             },
             data: {
                 html: '',

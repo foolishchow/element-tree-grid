@@ -14,8 +14,10 @@
   },
   "keywords": [
     "element",
-    "tree",
     "element-ui",
+    "tree",
+    "table",
+    "grid",
     "vue",
     "tree-grid",
     "tree-table"
