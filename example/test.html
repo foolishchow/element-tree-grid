@@ -12,6 +12,7 @@
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script type="text/javascript" src="../dist/tree-table.js"></script>
     <script type="text/javascript" src="./data.js"></script>
+    <script type="text/javascript" src="./data1.js"></script>
     <style type="text/css">
         body p {
             background-color: #f5f5f5;
@@ -115,6 +116,9 @@
                     blocks.forEach((block) => {
                         hljs.highlightBlock(block)
                     })
+                    /* setTimeout(() => {
+                        this.model.menus = trees_2;
+                    }, 4000); */
                 },
                 methods: {
                     text(scope) {

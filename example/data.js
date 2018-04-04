@@ -80,8 +80,7 @@ window.flatTree = [{
     "url": null,
     "depth": 1,
     "child_num": 2,
-    "description": "BussinessList",
-    "children": []
+    "description": "BussinessList"
 }, {
     "id": 12,
     "label": "Currencies",
