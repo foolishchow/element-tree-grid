@@ -6,11 +6,6 @@ import * as Expand from './expand'
 import ElTableInjecter from './inject'
 
 export type ColumnRow = {
-  $extra?: {
-    expanded?: boolean;
-    loading?: boolean;
-    hash?: string;
-  }
   [key: string]: any;
 }
 export type ColumnScope = {
@@ -54,7 +49,7 @@ const RenderContext = function (h: CreateElement, context: RenderContext<ElTable
   return RenderLeaf(h, context, scope);
 }
 
-const ElTableTreeColumn = {
+const ElTableTreeColumn: ElTableTreeColumnType = {
   name: 'el-table-tree-column',
   functional: true,
   props: ElTableTreeColumnPropDefine,

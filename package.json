@@ -14,6 +14,7 @@
   },
   "keywords": [
     "element",
+    "tree",
     "element-ui",
     "vue",
     "tree-grid",
@@ -42,6 +43,7 @@
     "rollup-plugin-uglify": "^1.0.1",
     "rollup-typescript": "^1.1.2",
     "rollup-watch": "^4.3.1",
-    "typescript": "^2.8.1"
+    "typescript": "^2.8.1",
+    "vue": "^2.5.16"
   }
 }
