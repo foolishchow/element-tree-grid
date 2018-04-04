@@ -1,6 +1,6 @@
 {
   "name": "element-tree-grid",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "element tree table with vue ",
   "main": "dist/tree-table.common.js",
   "typings": "types/index.d.ts",
