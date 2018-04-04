@@ -23,6 +23,7 @@ export default {
   ],
   targets: [
     { dest: 'dist/tree-table.common.js', format: 'cjs' },
-    { dest: 'dist/tree-table.js', format: 'umd' }
+    { dest: 'dist/tree-table.js', format: 'umd' },
+    { dest: 'dist/tree-table.es.js', format: 'es' }
   ]
 }

@@ -31,9 +31,6 @@ tree grid extends `element` ui  with `vue`
     //common 
     var ElTreeGrid = require('element-tree-grid');
     Vue.component(ElTreeGrid.name,ElTreeGrid);
-    //import from source code . so you can build them with your webpack or rollup ..
-    import ElTableTreeColumn from  'element-tree-grid/src/index.js';
-    Vue.component(ElTreeGrid.name,ElTreeGrid)
     ```
 
 
@@ -75,6 +72,7 @@ tree grid extends `element` ui  with `vue`
         },
         methods:{
             remote(row,callback){
+                // async or sync are both supported
                 setTimeout(function() {
                     callback(row.children)
                 },500)
@@ -83,16 +81,17 @@ tree grid extends `element` ui  with `vue`
     })
     ```
 - attributes
+    > all props of `el-table-column` are supported;
 
     | name          | description              | values          |
     | ------------- |:------------------------|:---------------:|
-    | prop          | same as `el-table-item`  |                 |
-    | label         | same as `el-table-item`  |                 |
-    | width         | same as `el-table-item`  |                 |
-    | fixed         | same as `el-table-item`  |                 |
-    | resizable     | same as `el-table-item`  |                 |
-    | formatter     | same as `el-table-item`  |                 |
-    | className     | same as `el-table-item`  |                 |
+    | prop          | same as `el-table-column`  |                 |
+    | label         | same as `el-table-column`  |                 |
+    | width         | same as `el-table-column`  |                 |
+    | fixed         | same as `el-table-column`  |                 |
+    | resizable     | same as `el-table-column`  |                 |
+    | formatter     | same as `el-table-column`  |                 |
+    | className     | same as `el-table-column`  |                 |
     | treeKey       | the key for neasted parse|  type:`String`,<br> default:`'id'` |
     | childNumKey   | the key of childNum      |  type:`String`,<br> default:`'child_num'` |
     | parentKey     | the key of parent_id        |  type:`String`, <br>default:`'parent_id'`|
@@ -101,8 +100,9 @@ tree grid extends `element` ui  with `vue`
     | fileIcon      | file icon className  |  type:`String`, <br>default:`'el-icon-file'`|
     | folderIcon      | folder icon className ,when opend use: `folderIcon-open`  |  type:`String`,<br> default:`'el-icon-folder'`|
     | remote       | remote method to get children | type:`Function`,<br/>default:`null`|
+    | allRemote    | request all data from remote ,you have to config prop `remote` first,default use request cache | type:`Boolean`,<br/>default:`false`|
     | expandAll    | expand all nodes when loaded | type:`Boolean`,<br/>default:`false`|
-    | expandKey    | key tells if the line is opened | type:`String`,<br/>default:`expanded`|
+    | expandKey    | key tells if the line is opened at inited ( just expended once )| type:`String`,<br/>default:`expanded`|
 
 > examples 
 
@@ -142,4 +142,6 @@ tree grid extends `element` ui  with `vue`
     </template>
 </el-table-tree-column>
 ```
+
+
 

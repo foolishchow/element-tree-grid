@@ -1,27 +1,39 @@
 import { CreateElement, FunctionalComponentOptions, RenderContext, VNode } from "vue";
-import { ElTableTreeColumnProps, ElTableTreeColumnPropsInner, ElTableTreeColumnType, ElTableTreeColumnPropDefine } from "./props";
+import { ElTableStore, ElTableTreeColumnProps, ElTableTreeColumnPropsInner, ElTableTreeColumnType, ElTableTreeColumnPropDefine } from "./props";
+import { ElTableColumnPropsInner, TableColumn } from "./dependence";
 import * as util from './utils';
+import * as Expand from './expand'
+import ElTableInjecter from './inject'
 
 export type ColumnRow = {
   $extra?: {
     expanded?: boolean;
     loading?: boolean;
+    hash?: string;
   }
   [key: string]: any;
 }
 export type ColumnScope = {
   row: ColumnRow,
-  column: any
+  column: TableColumn;
+  $index: number;
+  store: ElTableStore<ColumnRow>;
 }
+export type ElTableTreeColumnProps = ElTableTreeColumnProps;
 
 const RenderFolder = function (h: CreateElement, context: RenderContext<ElTableTreeColumnPropsInner>, scope: ColumnScope) {
+  if (util.isNeedExpanedRow(context, scope)) {
+    setTimeout(() => {
+      Expand.doExpand(context, scope)
+    }, 15);
+  }
   return <span
-    nativeOnClick={(e: MouseEvent) => {
+    onClick={(e: MouseEvent) => {
       e.preventDefault();
-      util.doExpand(context, scope)
+      Expand.doExpand(context, scope)
     }}>
     <span style={{ paddingLeft: util.paddingLeft(context, scope) }}>
-      <i class={util.icon(scope)} ></i>
+      <i class={util.icon(scope, context)} ></i>
       <i class={util.folderIcon(context, scope)} style={{ "padding-right": "7px" }}></i>
     </span>
     {util.renderDetail(h, context, scope)}
@@ -30,22 +42,24 @@ const RenderFolder = function (h: CreateElement, context: RenderContext<ElTableT
 
 const RenderLeaf = function (h: CreateElement, context: RenderContext<ElTableTreeColumnPropsInner>, scope: ColumnScope) {
   return <span style={{ paddingLeft: util.paddingLeft(context, scope) }}>
-    <i class={util.icon(scope)} style={{ "padding-right": "7px", "padding-left": "18px" }}></i>
+    <i class={context.props.fileIcon} style={{ "padding-right": "7px", "padding-left": "18px" }}></i>
     {util.renderDetail(h, context, scope)}
   </span>
 }
 
 const RenderContext = function (h: CreateElement, context: RenderContext<ElTableTreeColumnPropsInner>, scope: ColumnScope): any {
+  ElTableInjecter.Inject(scope);
   let hasChild = util.hasChild(context, scope);
   if (hasChild) return RenderFolder(h, context, scope);
   return RenderLeaf(h, context, scope);
 }
 
-const ElTableTreeColumn: ElTableTreeColumnType = {
+const ElTableTreeColumn = {
+  name: 'el-table-tree-column',
   functional: true,
   props: ElTableTreeColumnPropDefine,
   render(this: undefined, h: CreateElement, context: RenderContext<ElTableTreeColumnPropsInner>) {
-    // props will be lost when `scopedSlots` is rendered
+    // props will be lost when `scopedSlots` is rendering
     let attr: any = {};
     Object.keys(context.props).map(k => {
       attr[k] = (context.props as any)[k]
@@ -57,7 +71,9 @@ const ElTableTreeColumn: ElTableTreeColumnType = {
   }
 } as ElTableTreeColumnType;
 
+
 if (typeof window !== 'undefined' && (window as any).Vue) {
   ((window as any).Vue as any).component('el-table-tree-column', ElTableTreeColumn)
 }
+
 export default ElTableTreeColumn;

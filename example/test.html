@@ -25,8 +25,8 @@
         <p>formatter column with formatter</p>
         <el-table :data="model.menus" border max-height="400">
             <el-table-column prop="id" label="id" type="selection" fixed></el-table-column>
-            <el-table-tree-column fixed :expand-all="!!1" :remote="remote" file-icon="icon icon-file" folder-icon="icon icon-folder"
-                prop="label" label="title" width="320" class-name="123" header-align="center" :formatter="formatter">
+            <el-table-tree-column fixed :expand-all="!1" :remote="remote" file-icon="icon icon-file" folder-icon="icon icon-folder" prop="label"
+                label="title" width="320" class-name="123" header-align="center" :formatter="formatter">
             </el-table-tree-column>
             <el-table-column prop="description" label="Description" :show-overflow-tooltip="true" width="180"></el-table-column>
         </el-table>
@@ -42,7 +42,7 @@
                     <span>prefix =></span>
                     <span @click="text(scope)">{{scope.row.label}} -- {{scope.row.id}}</span>
                     <span>
-                        <=s uffix</span>
+                        <=suffix</span>
                 </template>
             </el-table-tree-column>
             <el-table-column prop="description" label="Description" width="180"></el-table-column>
@@ -50,25 +50,30 @@
 
     </div>
     <script type="text/javascript">
+        function noChild(arr) {
+            return JSON.parse(JSON.stringify(arr)).map(a => {
+                a.children == undefined;
+                return a;
+            })
+        }
+        console.info(noChild(trees))
         window.app = new Vue({
             el: "#app",
             data: {
                 model: {
-                    menus: trees
+                    menus: flatTree.filter(f => f['parent_id'] == null)
                 }
             },
             methods: {
                 remote(row, callback) {
-                    setTimeout(function () {
-                        callback(row.children)
-                    }, 500)
+                    callback(flatTree.filter(f => f['parent_id'] == row['id']))
                 },
                 formatter(row, column) {
                     return ' ---  ' + row.label;
                 }
             }
         })
-        /* window.app1 = new Vue({
+        window.app1 = new Vue({
             el: "#app1",
             data: {
                 model: {
@@ -85,7 +90,7 @@
                     console.info(scope)
                 }
             }
-        }) */
+        }) 
     </script>
 </body>
 

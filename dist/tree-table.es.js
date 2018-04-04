@@ -1,9 +1,3 @@
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.ElTableTreeColumn = factory());
-}(this, (function () { 'use strict';
-
 var nestRE = /^(attrs|props|on|nativeOn|class|style|hook)$/;
 
 var index = function mergeJSXProps(objs) {
@@ -513,6 +507,4 @@ if (typeof window !== 'undefined' && window.Vue) {
     window.Vue.component('el-table-tree-column', ElTableTreeColumn);
 }
 
-return ElTableTreeColumn;
-
-})));
+export default ElTableTreeColumn;

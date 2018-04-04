@@ -1,12 +1,12 @@
 {
   "name": "element-tree-grid",
-  "version": "0.0.15",
+  "version": "0.1.1",
   "description": "element tree grid with vue ",
   "main": "dist/tree-table.common.js",
   "typings": "types/index.d.ts",
   "scripts": {
     "dev": "rollup -w -c rollup.config.js",
-    "build": "rollup -c rollup.config.js"
+    "build": "tsc -d & rollup -c rollup.config.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,9 @@
     "url": "https://github.com/foolishchow/element-tree-grid/issues"
   },
   "homepage": "https://github.com/foolishchow/element-tree-grid#readme",
+  "peerDependencies": {
+    "vue": "^2.5.0"
+  },
   "devDependencies": {
     "babel-helper-vue-jsx-merge-props": "^2.0.2",
     "babel-plugin-syntax-jsx": "^6.18.0",
@@ -37,7 +40,6 @@
     "rollup-plugin-uglify": "^1.0.1",
     "rollup-typescript": "^1.1.2",
     "rollup-watch": "^4.3.1",
-    "typescript": "^2.8.1",
-    "vue": "^2.5.16"
+    "typescript": "^2.8.1"
   }
 }
