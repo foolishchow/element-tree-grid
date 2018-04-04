@@ -141,7 +141,6 @@ var ElTableTreeColumnPropDefine = {
         default: 'expanded'
     }
 };
-//# sourceMappingURL=props.js.map
 
 function hasChild(context, scope) {
     var _a = context.props,
@@ -244,7 +243,6 @@ function renderDetail(h, context, scope) {
         [scope.row[context.props.prop]]
     );
 }
-//# sourceMappingURL=utils.jsx.map
 
 var clone = function clone(data) {
     return JSON.parse(JSON.stringify(data));
@@ -421,7 +419,6 @@ function doExpand(context, scope) {
     }
     Expand(context, scope, data);
 }
-//# sourceMappingURL=expand.js.map
 
 var ElTableInject = /** @class */function () {
     function ElTableInject() {
@@ -442,7 +439,6 @@ var ElTableInject = /** @class */function () {
     return ElTableInject;
 }();
 var ElTableInjecter = new ElTableInject();
-//# sourceMappingURL=inject.js.map
 
 var RenderFolder = function RenderFolder(h, context, scope) {
     if (isNeedExpanedRow(context, scope)) {
