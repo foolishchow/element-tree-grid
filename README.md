@@ -19,7 +19,7 @@ tree grid extends `element` ui  with `vue`
     git clone https://github.com/foolishchow/element-tree-grid.git
     cd element-tree-grid
     npm install #or yarn
-    gulp 
+    npm run dev
     ```
 
 - use with node
