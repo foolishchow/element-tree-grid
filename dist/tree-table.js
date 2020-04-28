@@ -55,93 +55,6 @@ function mergeFn(a, b) {
   };
 }
 
-var ElTableTreeColumnPropDefine = {
-    prop: {
-        type: String
-    },
-    label: String,
-    className: String,
-    labelClassName: String,
-    property: String,
-    width: {},
-    minWidth: {},
-    renderHeader: Function,
-    sortable: {
-        type: [String, Boolean],
-        default: false
-    },
-    sortMethod: Function,
-    resizable: {
-        type: Boolean,
-        default: true
-    },
-    context: {},
-    columnKey: String,
-    align: String,
-    headerAlign: String,
-    showTooltipWhenOverflow: Boolean,
-    showOverflowTooltip: Boolean,
-    fixed: [Boolean, String],
-    formatter: Function,
-    selectable: Function,
-    reserveSelection: Boolean,
-    filterMethod: Function,
-    filteredValue: Array,
-    filters: Array,
-    filterMultiple: {
-        type: Boolean,
-        default: true
-    },
-    treeKey: {
-        type: String,
-        default: 'id'
-    },
-    childNumKey: {
-        type: String,
-        default: 'child_num'
-    },
-    parentKey: {
-        type: String,
-        default: 'parent_id'
-    },
-    levelKey: {
-        type: String,
-        default: 'depth'
-    },
-    childKey: {
-        type: String,
-        default: 'children'
-    },
-    fileIcon: {
-        type: String,
-        default: 'el-icon-file'
-    },
-    folderIcon: {
-        type: String,
-        default: 'el-icon-folder'
-    },
-    remote: {
-        type: Function,
-        default: null
-    },
-    allRemote: {
-        type: Boolean,
-        default: false
-    },
-    indentSize: {
-        type: Number,
-        default: 14
-    },
-    expandAll: {
-        type: Boolean,
-        default: false
-    },
-    expandKey: {
-        type: String,
-        default: 'expanded'
-    }
-};
-
 function hasChild(context, scope) {
     var _a = context.props,
         childNumKey = _a.childNumKey,
@@ -155,6 +68,18 @@ function hasChild(context, scope) {
     } else {
         return false;
     }
+}
+function hasChildInData(context, scope) {
+    var _a = context.props,
+        childNumKey = _a.childNumKey,
+        childKey = _a.childKey,
+        treeKey = _a.treeKey,
+        parentKey = _a.parentKey,
+        data = scope.store.states._data,
+        row = scope.row;
+    return data.filter(function (d) {
+        return d[parentKey] == row[treeKey];
+    }).length > 0;
 }
 function paddingLeft(context, scope) {
     return parseInt(scope.row[context.props.levelKey]) * parseInt(context.props.indentSize.toString()) + 'px';
@@ -177,11 +102,36 @@ function isCachedExpanedRow(context, scope) {
         return _treeKey == row[treeKey];
     }).length > 0;
 }
+var isUnExpanded = function isUnExpanded(context, scope) {
+    var row = scope.row,
+        data = scope.store.states._data,
+        _treeRowExpanded = scope.store.states._treeRowExpanded,
+        key = context.props.treeKey,
+        parentKey = context.props.parentKey;
+    var _hasChild = hasChild(context, scope);
+    if (!_hasChild) return false;
+    var IsRowShowed = data.some(function (item) {
+        return item[key] == row[key];
+    });
+    if (!IsRowShowed) return false;
+    var isInexpanded = scope.store.states._treeRowExpanded.some(function (treeKey) {
+        return treeKey[context.props.treeKey] == scope.row[context.props.treeKey];
+    });
+    if (!isInexpanded) return false;
+    return !hasChildInData(context, scope);
+};
 function isNeedExpanedRow(context, scope) {
     if (context.props.expandAll && !scope.store.states._treeInitedExpanded.some(function (treeKey) {
         return treeKey == scope.row[context.props.treeKey];
     })) {
         scope.store.states._treeInitedExpanded.push(scope.row[context.props.treeKey]);
+        return true;
+    }
+    if (isLoadingRow(context, scope)) return false;
+    if (isUnExpanded(context, scope)) {
+        scope.store.states._treeRowExpanded = scope.store.states._treeRowExpanded.filter(function (ex) {
+            return ex[context.props.treeKey] != scope.row[context.props.treeKey];
+        });
         return true;
     }
     var expandKey = context.props.expandKey,
@@ -240,7 +190,7 @@ function renderDetail(h, context, scope) {
     return h(
         'span',
         null,
-        [scope.row[context.props.prop]]
+        ["  ", scope.row[context.props.prop]]
     );
 }
 
@@ -323,10 +273,12 @@ var Colspand = function Colspand(context, scope, data) {
     var _a = context.props,
         parentKey = _a.parentKey,
         treeKey = _a.treeKey,
+        childKey = _a.childKey,
         states = scope.store.states,
         row = scope.row,
         result = [];
-    var removeIds = descendantsIds(row[treeKey], data, parentKey, treeKey);
+    var removeIds = [];
+    removeIds = descendantsIds(row[treeKey], data, parentKey, treeKey);
     data = data.filter(function (item) {
         return !removeIds.some(function (id) {
             return id == item[treeKey];
@@ -423,13 +375,21 @@ function doExpand(context, scope) {
 var ElTableInject = /** @class */function () {
     function ElTableInject() {
         this.Injected = {};
+        this.InjectedTable = {};
     }
     ElTableInject.prototype.isInjected = function (scope) {
         return this.Injected[scope.store.table.tableId];
     };
-    ElTableInject.prototype.Inject = function (scope) {
+    ElTableInject.prototype.Inject = function (context, scope) {
         if (this.isInjected(scope)) return;
+        this.InjectedTable[scope.store.table.tableId] = scope.store.table;
         this.Injected[scope.store.table.tableId] = true;
+        var key = context.props.treeKey,
+            parentKey = context.props.parentKey;
+        var table = scope.store.table;
+        scope.store.table.$on("current-change", function () {
+            validateAllExpanded(table, key);
+        });
         scope.store.states._treeRowExpanded = [];
         scope.store.states._treeRowLoading = [];
         scope.store.states._treeCachedExpanded = [];
@@ -438,7 +398,106 @@ var ElTableInject = /** @class */function () {
     };
     return ElTableInject;
 }();
+var validateAllExpanded = function validateAllExpanded(table, key) {
+    var data = table.store.states._data,
+        _treeRowExpanded = table.store.states._treeRowExpanded;
+    var IsDataListChanged = _treeRowExpanded.every(function (expanded) {
+        return data.every(function (row) {
+            return row[key] != expanded[key];
+        });
+    });
+    if (IsDataListChanged) {
+        table.store.states._treeRowExpanded = [];
+    }
+};
 var ElTableInjecter = new ElTableInject();
+
+var ElTableTreeColumnPropDefine = {
+    prop: {
+        type: String
+    },
+    label: String,
+    className: String,
+    labelClassName: String,
+    property: String,
+    width: {},
+    minWidth: {},
+    renderHeader: Function,
+    sortable: {
+        type: [String, Boolean],
+        default: false
+    },
+    sortMethod: Function,
+    resizable: {
+        type: Boolean,
+        default: true
+    },
+    context: {},
+    columnKey: String,
+    align: String,
+    headerAlign: String,
+    showTooltipWhenOverflow: Boolean,
+    showOverflowTooltip: Boolean,
+    fixed: [Boolean, String],
+    formatter: Function,
+    selectable: Function,
+    reserveSelection: Boolean,
+    filterMethod: Function,
+    filteredValue: Array,
+    filters: Array,
+    filterMultiple: {
+        type: Boolean,
+        default: true
+    },
+    treeKey: {
+        type: String,
+        default: 'id'
+    },
+    childNumKey: {
+        type: String,
+        default: 'child_num'
+    },
+    parentKey: {
+        type: String,
+        default: 'parent_id'
+    },
+    levelKey: {
+        type: String,
+        default: 'depth'
+    },
+    childKey: {
+        type: String,
+        default: 'children'
+    },
+    fileIcon: {
+        type: String,
+        default: 'el-icon-file'
+    },
+    folderIcon: {
+        type: String,
+        default: 'el-icon-folder'
+    },
+    remote: {
+        type: Function,
+        default: null
+    },
+    allRemote: {
+        type: Boolean,
+        default: false
+    },
+    indentSize: {
+        type: Number,
+        default: 14
+    },
+    expandAll: {
+        type: Boolean,
+        default: false
+    },
+    expandKey: {
+        type: String,
+        default: 'expanded'
+    }
+};
 
 var RenderFolder = function RenderFolder(h, context, scope) {
     if (isNeedExpanedRow(context, scope)) {
@@ -463,7 +522,7 @@ var RenderFolder = function RenderFolder(h, context, scope) {
                 'i',
                 { 'class': icon(scope, context) },
                 []
-            ), h(
+            ), " ", h(
                 'i',
                 { 'class': folderIcon(context, scope) },
                 []
@@ -483,7 +542,7 @@ var RenderLeaf = function RenderLeaf(h, context, scope) {
     );
 };
 var RenderContext = function RenderContext(h, context, scope) {
-    ElTableInjecter.Inject(scope);
+    ElTableInjecter.Inject(context, scope);
     var hasChild$$1 = hasChild(context, scope);
     if (hasChild$$1) return RenderFolder(h, context, scope);
     return RenderLeaf(h, context, scope);

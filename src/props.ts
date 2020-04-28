@@ -1,4 +1,4 @@
-import Vue, { CreateElement, FunctionalComponentOptions, RenderContext, VNode } from "vue";
+import Vue, { FunctionalComponentOptions } from "vue";
 import { ElTableColumnProps, ElTableColumnPropsInner, TableColumn } from "./dependence";
 export type ElTableTreeColumnProps = ElTableColumnProps & {
   treeKey: string;
@@ -24,7 +24,7 @@ export type ElTableTreeColumnPropsInner = ElTableColumnPropsInner & {
   expandKey: string;
   fileIcon: string;
   folderIcon: string;
-  remote: Function;
+  remote: (parentRow: any, callback: (child: any[]) => void) => void;
   allRemote: boolean;
   expandAll: boolean;
   indentSize: number;
@@ -154,13 +154,15 @@ export type ElTableStoreStates<Row> = {
   _treeCachedExpanded: Row[];
   _treeInitedExpanded: any[];
 }
-export type ElTableStore<Row=any> = {
-  table: Vue & {
-    tableId: string;
-    store: ElTableStore<Row>;
-    clearSelection(): void;
-    toggleRowSelection(row: Row): void;
-  };
+export type ElTableType<Row> = Vue & {
+  tableId: string;
+  store: ElTableStore<Row>;
+  clearSelection(): void;
+  toggleRowSelection(row: Row): void;
+}
+export type ElTableStore<Row = any> = {
+  table: ElTableType<Row>;
+
   states: ElTableStoreStates<Row>;
   mutations: {
     setData(states: ElTableStoreStates<Row>, data: Row[]): void;

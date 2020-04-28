@@ -1,6 +1,6 @@
 import { CreateElement, RenderContext } from "vue";
-import { ElTableTreeColumnPropsInner } from "./props";
 import { ColumnScope } from './index';
+import { ElTableTreeColumnPropsInner } from "./props";
 export declare function hasChild(context: RenderContext<ElTableTreeColumnPropsInner>, scope: ColumnScope): boolean;
 export declare function paddingLeft(context: RenderContext<ElTableTreeColumnPropsInner>, scope: ColumnScope): string;
 export declare function isNeedExpanedRow(context: RenderContext<ElTableTreeColumnPropsInner>, scope: ColumnScope): boolean;

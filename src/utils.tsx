@@ -1,6 +1,6 @@
-import { CreateElement, FunctionalComponentOptions, RenderContext, VNode } from "vue";
-import { ElTableTreeColumnPropsInner, ElTableTreeColumnType, ElTableTreeColumnPropDefine } from "./props";
-import { ColumnScope, ColumnRow } from './index'
+import { CreateElement, RenderContext } from "vue";
+import { ColumnScope } from './index';
+import { ElTableTreeColumnPropsInner } from "./props";
 export function hasChild(context: RenderContext<ElTableTreeColumnPropsInner>, scope: ColumnScope) {
   let { childNumKey, childKey } = context.props,
     { row } = scope;
@@ -12,6 +12,13 @@ export function hasChild(context: RenderContext<ElTableTreeColumnPropsInner>, sc
   } else {
     return false;
   }
+}
+
+function hasChildInData(context: RenderContext<ElTableTreeColumnPropsInner>, scope: ColumnScope) {
+  let { childNumKey, childKey, treeKey, parentKey } = context.props,
+    data = scope.store.states._data,
+    { row } = scope;
+  return data.filter(d => d[parentKey] == row[treeKey]).length > 0
 }
 
 
@@ -31,14 +38,41 @@ function isCachedExpanedRow(context: RenderContext<ElTableTreeColumnPropsInner>,
   return _treeCachedExpanded.map(row => row[treeKey]).filter(_treeKey => _treeKey == row[treeKey]).length > 0;
 }
 
+const isUnExpanded = (context: RenderContext<ElTableTreeColumnPropsInner>, scope: ColumnScope) => {
+  let row = scope.row,
+    data = scope.store.states._data,
+    _treeRowExpanded = scope.store.states._treeRowExpanded,
+    key = context.props.treeKey,
+    parentKey = context.props.parentKey;
+  let _hasChild = hasChild(context, scope);
+  if (!_hasChild) return false;
+  let IsRowShowed = data.some(item => item[key] == row[key]);
+  if (!IsRowShowed) return false;
+  let isInexpanded = scope.store.states._treeRowExpanded.some(treeKey => treeKey[context.props.treeKey] == scope.row[context.props.treeKey])
+  if (!isInexpanded) return false;
+  return !hasChildInData(context, scope)
+}
 export function isNeedExpanedRow(context: RenderContext<ElTableTreeColumnPropsInner>, scope: ColumnScope) {
-  if (context.props.expandAll && !scope.store.states._treeInitedExpanded.some(treeKey => treeKey == scope.row[context.props.treeKey])) {
+  if (
+    context.props.expandAll &&
+    !scope.store.states._treeInitedExpanded.some(treeKey => treeKey == scope.row[context.props.treeKey])
+  ) {
     scope.store.states._treeInitedExpanded.push(scope.row[context.props.treeKey]);
+    return true;
+  }
+  if (isLoadingRow(context, scope)) return false;
+  if (isUnExpanded(context, scope)) {
+    scope.store.states._treeRowExpanded = scope.store.states._treeRowExpanded
+      .filter(ex => ex[context.props.treeKey] != scope.row[context.props.treeKey]);
     return true;
   }
   let { expandKey } = context.props,
     row = scope.row;
-  if (expandKey && row[expandKey] && !scope.store.states._treeInitedExpanded.some(treeKey => treeKey == row[context.props.treeKey])) {
+
+  if (expandKey && row[expandKey]
+    &&
+    !scope.store.states._treeInitedExpanded.some(treeKey => treeKey == row[context.props.treeKey])
+  ) {
     scope.store.states._treeInitedExpanded.push(scope.row[context.props.treeKey]);
     return true;
   }
@@ -79,6 +113,6 @@ export function renderDetail(h: CreateElement, context: RenderContext<ElTableTre
   if (context.props.formatter) {
     return <span>{context.props.formatter(scope.row, scope.column)}</span>
   }
-  return <span>{scope.row[context.props.prop]}</span>
+  return <span>{"  "}{scope.row[context.props.prop]}</span>
 }
 

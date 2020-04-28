@@ -4,7 +4,7 @@ import { ElTableTreeColumnPropsInner } from "./props";
 import { isLoadingRow, isExpandedRow } from "./utils";
 
 const hash = () => Math.floor(Math.random() * Math.random() * Math.random() * Math.random() * 1000);
-const clone = function (data: any) {
+export const clone = function (data: any) {
   return JSON.parse(JSON.stringify(data))
 }
 const index = (hash: string, data: ColumnRow[]) => {
@@ -45,6 +45,8 @@ const descendantsIds = (id: any, data: ColumnRow[], parentKey: string, treeKey: 
   }
   return result;
 }
+
+
 
 
 const has = function (context: RenderContext<ElTableTreeColumnPropsInner>, item: ColumnRow, list: ColumnRow[]) {
@@ -104,11 +106,12 @@ const getIndex = function (context: RenderContext<ElTableTreeColumnPropsInner>, 
 }
 
 const Colspand = function (context: RenderContext<ElTableTreeColumnPropsInner>, scope: ColumnScope, data: ColumnRow[]) {
-  let { parentKey, treeKey } = context.props,
+  let { parentKey, treeKey, childKey } = context.props,
     states = scope.store.states,
     row = scope.row,
     result: ColumnRow[] = [];
-  let removeIds = descendantsIds(row[treeKey], data, parentKey, treeKey);
+  let removeIds: any[] = [];
+  removeIds = descendantsIds(row[treeKey], data, parentKey, treeKey);
   data = data.filter(item => !removeIds.some(id => id == item[treeKey]))
   let NeedToCached = states._treeRowExpanded.filter(item => removeIds.some(id => id == item[treeKey]))
   let { _treeCachedExpanded } = states;

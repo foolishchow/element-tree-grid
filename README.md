@@ -10,6 +10,10 @@
 
 tree grid extends `element` ui  with `vue`   
 
+#### releases v1.0.4
+- try to expand row expanded after data reload
+
+
 **having problems** with `<el-table-column type="selection" fixed></el-table-column>`    
 
 if you have any idea , **welcome !!!**
@@ -90,27 +94,27 @@ if you have any idea , **welcome !!!**
 - attributes
     > all props of `el-table-column` are supported;
 
-    | name          | description              | values          |
-    | ------------- |:------------------------|:---------------:|
-    | prop          | same as `el-table-column`  |                 |
-    | label         | same as `el-table-column`  |                 |
-    | width         | same as `el-table-column`  |                 |
-    | fixed         | same as `el-table-column`  |                 |
-    | resizable     | same as `el-table-column`  |                 |
-    | formatter     | same as `el-table-column`  |                 |
-    | className     | same as `el-table-column`  |                 |
-    | treeKey       | the key for neasted parse|  type:`String`,<br> default:`'id'` |
-    | childNumKey   | the key of childNum      |  type:`String`,<br> default:`'child_num'` |
-    | parentKey     | the key of parent_id        |  type:`String`, <br>default:`'parent_id'`|
-    | levelKey      | the key of node's depth  |  type:`String`,<br> default:`'depth'`|
-    | childKey      | the key of node's children been placed  |  type:`String`, <br>default:`'children'`|
-    | fileIcon      | file icon className  |  type:`String`, <br>default:`'el-icon-file'`|
-    | folderIcon      | folder icon className ,when opend use: `folderIcon-open`  |  type:`String`,<br> default:`'el-icon-folder'`|
-    | remote       | remote method to get children | type:`Function`,<br/>default:`null`|
-    | allRemote    | request all data from remote ,you have to config prop `remote` first,default use request cache | type:`Boolean`,<br/>default:`false`|
-    | expandAll    | expand all nodes when loaded | type:`Boolean`,<br/>default:`false`|
-    | expandKey    | key tells if the line is opened at inited ( just expended once )| type:`String`,<br/>default:`expanded`|
-    | indentSize    | indent number ,united in `px`| type:`Number`,<br/>default:`14`|
+    | name        | description                                                                                    |                    values                     |
+    | ----------- | :--------------------------------------------------------------------------------------------- | :-------------------------------------------: |
+    | prop        | same as `el-table-column`                                                                      |                                               |
+    | label       | same as `el-table-column`                                                                      |                                               |
+    | width       | same as `el-table-column`                                                                      |                                               |
+    | fixed       | same as `el-table-column`                                                                      |                                               |
+    | resizable   | same as `el-table-column`                                                                      |                                               |
+    | formatter   | same as `el-table-column`                                                                      |                                               |
+    | className   | same as `el-table-column`                                                                      |                                               |
+    | treeKey     | the key for neasted parse                                                                      |       type:`String`,<br> default:`'id'`       |
+    | childNumKey | the key of childNum                                                                            |   type:`String`,<br> default:`'child_num'`    |
+    | parentKey   | the key of parent_id                                                                           |   type:`String`, <br>default:`'parent_id'`    |
+    | levelKey    | the key of node's depth                                                                        |     type:`String`,<br> default:`'depth'`      |
+    | childKey    | the key of node's children been placed                                                         |    type:`String`, <br>default:`'children'`    |
+    | fileIcon    | file icon className                                                                            |  type:`String`, <br>default:`'el-icon-file'`  |
+    | folderIcon  | folder icon className ,when opend use: `folderIcon-open`                                       | type:`String`,<br> default:`'el-icon-folder'` |
+    | remote      | remote method to get children                                                                  |      type:`Function`,<br/>default:`null`      |
+    | allRemote   | request all data from remote ,you have to config prop `remote` first,default use request cache |      type:`Boolean`,<br/>default:`false`      |
+    | expandAll   | expand all nodes when loaded                                                                   |      type:`Boolean`,<br/>default:`false`      |
+    | expandKey   | key tells if the line is opened at inited ( just expended once )                               |     type:`String`,<br/>default:`expanded`     |
+    | indentSize  | indent number ,united in `px`                                                                  |        type:`Number`,<br/>default:`14`        |
 
 > examples 
 

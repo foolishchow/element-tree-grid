@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>tree-grid</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" type="text/css" href="http:////at.alicdn.com/t/font_a9e0jr8sy2hme7b9.css">
+    <link rel="stylesheet"
+        href="http://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/default.min.css">
+    <script src="http://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js"></script>
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script type="text/javascript" src="../dist/tree-table.js"></script>
+    <script type="text/javascript" src="./data.js"></script>
+    <style type="text/css">
+        body p {
+            background-color: #f5f5f5;
+            border-left: 4px solid #ccc;
+            line-height: 40px;
+            padding-left: 10px;
+        }
+
+        .icon-file {
+            padding-right: 7px;
+            padding-left: 18px
+        }
+
+        .icon-folder,
+        .icon-folder-open {
+            padding-left: 7px;
+            padding-right: 7px
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <div id="app" style="padding: 30px;">
+            <p>load data by props remote <button @click="cl">aaaaa</button></p>
+            <el-table :data="model.menus" border max-height="400" ref="table">
+                <el-table-column prop="id" label="id" type="selection" fixed></el-table-column>
+                <el-table-tree-column fixed :expand-all="!!1" :remote="remote" file-icon="icon icon-file"
+                    folder-icon="icon icon-folder" prop="label" label="title" width="320" class-name="123"
+                    header-align="center">
+                </el-table-tree-column>
+                <el-table-column prop="description" label="Description" :show-overflow-tooltip="true" width="180">
+                </el-table-column>
+            </el-table>
+        </div>
+
+        <script type="text/javascript">
+            new Vue({
+                el: "#app",
+                created() {
+                },
+                data: {
+                    model: {
+                        menus: flatTree.filter(f => f['parent_id'] == null)
+                    }
+                },
+                mounted() {
+                    console.info(this.$refs.table.clearTreeCloumn)
+                },
+                methods: {
+                    remote(row, callback) {
+                        callback(flatTree.filter(f => f['parent_id'] == row['id']))
+                    },
+                    formatter(row, column) {
+                        return ' ---  ' + row.label;
+                    },
+                    cl() {
+                        this.$refs.table.$emit("clearTreeCloumn")
+                    }
+                }
+            })
+        </script>
+    </div>
+
+
+</body>
+
+</html>

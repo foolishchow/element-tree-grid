@@ -1,9 +1,9 @@
-import { CreateElement, FunctionalComponentOptions, RenderContext, VNode } from "vue";
-import { ElTableStore, ElTableTreeColumnProps, ElTableTreeColumnPropsInner, ElTableTreeColumnType, ElTableTreeColumnPropDefine } from "./props";
-import { ElTableColumnPropsInner, TableColumn } from "./dependence";
+import { CreateElement, RenderContext } from "vue";
+import { TableColumn } from "./dependence";
+import * as Expand from './expand';
+import ElTableInjecter from './inject';
+import { ElTableStore, ElTableTreeColumnPropDefine, ElTableTreeColumnProps as ElTableTreeColumnPropsOrigin, ElTableTreeColumnPropsInner, ElTableTreeColumnType } from "./props";
 import * as util from './utils';
-import * as Expand from './expand'
-import ElTableInjecter from './inject'
 
 export type ColumnRow = {
   [key: string]: any;
@@ -14,7 +14,7 @@ export type ColumnScope = {
   $index: number;
   store: ElTableStore<ColumnRow>;
 }
-export type ElTableTreeColumnProps = ElTableTreeColumnProps;
+export type ElTableTreeColumnProps = ElTableTreeColumnPropsOrigin;
 
 const RenderFolder = function (h: CreateElement, context: RenderContext<ElTableTreeColumnPropsInner>, scope: ColumnScope) {
   if (util.isNeedExpanedRow(context, scope)) {
@@ -23,12 +23,12 @@ const RenderFolder = function (h: CreateElement, context: RenderContext<ElTableT
     }, 15);
   }
   return <span
-    onClick={(e: MouseEvent) => {
+    onClick={(e: any) => {
       e.preventDefault();
       Expand.doExpand(context, scope)
     }}>
     <span style={{ paddingLeft: util.paddingLeft(context, scope) }}>
-      <i class={util.icon(scope, context)} ></i>
+      <i class={util.icon(scope, context)} ></i>{" "}
       <i class={util.folderIcon(context, scope)}></i>
     </span>
     {util.renderDetail(h, context, scope)}
@@ -43,7 +43,7 @@ const RenderLeaf = function (h: CreateElement, context: RenderContext<ElTableTre
 }
 
 const RenderContext = function (h: CreateElement, context: RenderContext<ElTableTreeColumnPropsInner>, scope: ColumnScope): any {
-  ElTableInjecter.Inject(scope);
+  ElTableInjecter.Inject(context, scope);
   let hasChild = util.hasChild(context, scope);
   if (hasChild) return RenderFolder(h, context, scope);
   return RenderLeaf(h, context, scope);

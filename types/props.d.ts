@@ -23,7 +23,7 @@ export declare type ElTableTreeColumnPropsInner = ElTableColumnPropsInner & {
     expandKey: string;
     fileIcon: string;
     folderIcon: string;
-    remote: Function;
+    remote: (parentRow: any, callback: (child: any[]) => void) => void;
     allRemote: boolean;
     expandAll: boolean;
     indentSize: number;
@@ -149,13 +149,14 @@ export declare type ElTableStoreStates<Row> = {
     _treeCachedExpanded: Row[];
     _treeInitedExpanded: any[];
 };
+export declare type ElTableType<Row> = Vue & {
+    tableId: string;
+    store: ElTableStore<Row>;
+    clearSelection(): void;
+    toggleRowSelection(row: Row): void;
+};
 export declare type ElTableStore<Row = any> = {
-    table: Vue & {
-        tableId: string;
-        store: ElTableStore<Row>;
-        clearSelection(): void;
-        toggleRowSelection(row: Row): void;
-    };
+    table: ElTableType<Row>;
     states: ElTableStoreStates<Row>;
     mutations: {
         setData(states: ElTableStoreStates<Row>, data: Row[]): void;
